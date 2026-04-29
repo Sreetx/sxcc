@@ -80,100 +80,99 @@ try:
             chos = input(" ? Do you want to install the required packages now? (Y/n): ").strip()
             if chos.upper() == "Y":
                 rprint(" * Installing packages...")
-                cmd_add = "--break-system-packages"
-
-                try:
-                    subprocess.check_call([sys.executable, "-m", "pip", "install", "rich", 'pillow', 'prompt_toolkit', 'term-image', cmd_add])
-                except subprocess.CalledProcessError as e:
-                    if sys.platform in ["linux", "linux2"]:
-                        print(" ! Auto installation with pip falied! Trying to install with system package manager..."); time.sleep(2)
+                if sys.platform in ["win32", "win"]:
+                    try:
+                        subprocess.run([sys.executable, "-m", "pip", "install", "requests", "rich", "prompt_toolkit", "term-image", "pillow", "ffmpeg-python"], check=True)
+                        print(f"\n # Packages installed successfully! Please restart the program."); exit()
+                if sys.platform in ["linux", "linux2"]:
+                    print(" ! Auto installation with pip falied! Trying to install with system package manager..."); time.sleep(2)
+                    try:
+                        subprocess.run(["sudo", "pacman", "-Syu"])
+                    except subprocess.CalledProcessError:
                         try:
-                            subprocess.run(["sudo", "pacman", "-Syu"])
-                        except subprocess.CalledProcessError:
-                            try:
-                                print(f"\n # Installing Components (APT)..."); time.sleep(0.3)
-                                subprocess.run(['sudo', 'apt', 'update', '&&', 'sudo', 'apt', 'upgrade'], shell=True)
-                                subprocess.run(['sudo', 'apt', 'install', 'python3-requests', 'python3-prompt_toolkit', 'python3-rich', 'python3-term-image', 'python3-pillow'], shell=True)
-                                print(f"\n # If the installation error occurs, you can install it manually")
-                                for i, h in enumerate(['Requests', 'Prompt Toolkit', 'Rich', 'Pillow', 'Term-Image'], 1): 
-                                    print(f" {i}. {h}")
-
-                                print (f"\n # Components installation successfuly")
-                                print (f" # You can use this tools btw"); time.sleep(0.4)
-                                exit()
-                            except subprocess.CalledProcessError:
-                                print (f"\n ! APT or Pacman package manager is not working properly! Please install the required packages manually and restart the program."); exit()
-
-                        paru = shutil.which("paru")
-                        yay = shutil.which("yay")
-                        if paru and yay:
-                            print (f"\n * Many AUR helper found!")
-                            for i, h in enumerate(['paru', 'yay'], 1): 
+                            print(f"\n # Installing Components (APT)..."); time.sleep(0.3)
+                            subprocess.run(['sudo', 'apt', 'update', '&&', 'sudo', 'apt', 'upgrade'], shell=True)
+                            subprocess.run(['sudo', 'apt', 'install', 'python3-requests', 'python3-prompt_toolkit', 'python3-rich', 'python3-term-image', 'python3-pillow'], shell=True)
+                            print(f"\n # If the installation error occurs, you can install it manually")
+                            for i, h in enumerate(['Requests', 'Prompt Toolkit', 'Rich', 'Pillow', 'Term-Image'], 1): 
                                 print(f" {i}. {h}")
-                            
-                            choice = str(input(f" ? Choose one: "))
-                            if choice.lower() == "1":
-                                helper = paru
-                            elif choice.lower() == "2":
-                                helper = yay
-                            else:
-                                print(f" # Please select one!")
-                                exit()
-                        elif paru:
-                            helper = paru
-                        elif yay:
-                            helper = yay
-                            
-                        else:
-                            print(f"\n ! AUR helper not found! please install yay or paru")
 
-                        helper_list = helper.split('/')[-1]
-
-                        print(f"\n # Installing Components ({helper_list})..."); time.sleep(0.3)
-                        try:
-                            subprocess.run([helper, '-S', 'python-requests', 'python-rich', 'python-prompt_toolkit', 'python-term-image', 'python-pillow', '--noconfirm'], check=True)
-                        except Exception as e:
-                            print(f" ! Something went wrong!")
-                            print(e)
+                            print (f"\n # Components installation successfuly")
+                            print (f" # You can use this tools btw"); time.sleep(0.4)
                             exit()
-                            rprint (" * Checking for xcursorgen dependency..."); time.sleep(1)
+                        except subprocess.CalledProcessError:
+                            print (f"\n ! APT or Pacman package manager is not working properly! Please install the required packages manually and restart the program."); exit()
 
-                        if not shutil.which("xcursorgen"):
-                            managers = {
-                                "pacman": "xorg-xcursorgen",
-                                "apt-get": "x11-apps",
-                                "dnf": "xcursorgen",
-                                "zypper": "xcursorgen"
-                                }
-                            found_pm = None
-                            package_to_install = None
-                            for pm, pkg in managers.items():
-                                if shutil.which(pm):
-                                    found_pm = pm
-                                    package_to_install = pkg
-                                    break
-
-                            cmd = ["sudo", found_pm]
-                                
-                            if found_pm == "pacman":
-                                cmd.extend(["-S", "--noconfirm", package_to_install])
-                            elif found_pm == "apt-get":
-                                subprocess.run(["sudo", "apt-get", "update"], check=True)
-                                cmd.extend(["install", "-y", package_to_install])
-                            else:
-                                print (f"\n ! Xcursorgen auto installation is only supported on Pacman and APT package manager! Please install xcursorgen manually and restart the program."); time.sleep(2)
-
-                            try:
-                                subprocess.run(cmd, check=True)
-                            except subprocess.CalledProcessError as e:
-                                rprint(f"[white on red] FAIL [/] Error installing {package_to_install}: {e}")
-                            rprint(f"SUCCESS {package_to_install} is installed and ready to use!"); exit()
+                    paru = shutil.which("paru")
+                    yay = shutil.which("yay")
+                    if paru and yay:
+                        print (f"\n * Many AUR helper found!")
+                        for i, h in enumerate(['paru', 'yay'], 1): 
+                            print(f" {i}. {h}")
+                        
+                        choice = str(input(f" ? Choose one: "))
+                        if choice.lower() == "1":
+                            helper = paru
+                        elif choice.lower() == "2":
+                            helper = yay
                         else:
-                            pass
+                            print(f" # Please select one!")
+                            exit()
+                    elif paru:
+                        helper = paru
+                    elif yay:
+                        helper = yay
+                        
                     else:
-                        print(f"\n ! Automatic installation is only supported on Linux! Please install the required packages manually and restart the program.")
-                        print(f" ! Required packages: rich, pillow, prompt_toolkit, term-image, ffmpeg-python")
+                        print(f"\n ! AUR helper not found! please install yay or paru")
+
+                    helper_list = helper.split('/')[-1]
+
+                    print(f"\n # Installing Components ({helper_list})..."); time.sleep(0.3)
+                    try:
+                        subprocess.run([helper, '-S', 'python-requests', 'python-rich', 'python-prompt_toolkit', 'python-term-image', 'python-pillow', '--noconfirm'], check=True)
+                    except Exception as e:
+                        print(f" ! Something went wrong!")
+                        print(e)
                         exit()
+                        rprint (" * Checking for xcursorgen dependency..."); time.sleep(1)
+
+                    if not shutil.which("xcursorgen"):
+                        managers = {
+                            "pacman": "xorg-xcursorgen",
+                            "apt-get": "x11-apps",
+                            "dnf": "xcursorgen",
+                            "zypper": "xcursorgen"
+                            }
+                        found_pm = None
+                        package_to_install = None
+                        for pm, pkg in managers.items():
+                            if shutil.which(pm):
+                                found_pm = pm
+                                package_to_install = pkg
+                                break
+
+                        cmd = ["sudo", found_pm]
+                            
+                        if found_pm == "pacman":
+                            cmd.extend(["-S", "--noconfirm", package_to_install])
+                        elif found_pm == "apt-get":
+                            subprocess.run(["sudo", "apt-get", "update"], check=True)
+                            cmd.extend(["install", "-y", package_to_install])
+                        else:
+                            print (f"\n ! Xcursorgen auto installation is only supported on Pacman and APT package manager! Please install xcursorgen manually and restart the program."); time.sleep(2)
+
+                        try:
+                            subprocess.run(cmd, check=True)
+                        except subprocess.CalledProcessError as e:
+                            rprint(f"[white on red] FAIL [/] Error installing {package_to_install}: {e}")
+                        rprint(f"SUCCESS {package_to_install} is installed and ready to use!"); exit()
+                    else:
+                        pass
+                else:
+                    print(f"\n ! Automatic installation is only supported on Linux! Please install the required packages manually and restart the program.")
+                    print(f" ! Required packages: rich, pillow, prompt_toolkit, term-image, ffmpeg-python")
+                    exit()
 
                 rprint(" * Packages installed successfully! Please restart the program."); exit()
             else: 
