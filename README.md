@@ -5,11 +5,11 @@ Use any type of cursor theme from anywhere!
 With this tool you can convert .ani (Windows) files to XCurosrs (Linux) which can be used in linux!
 Let's bring your favorite waifu to the Linux world through cursors!
 
-# Donate
+# Support the Project!
 
-You can donate here: https://saweria.co/linggachannel
+* **Saweria:** https://saweria.co/linggachannel
 
-Subscribe my Channel!: https://youtube.com/@linggachannel4781
+* **YouTube:** https://youtube.com/@linggachannel4781
 
 # Installation
 
