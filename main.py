@@ -58,7 +58,6 @@ try:
             from urllib.parse import urlparse
             from prompt_toolkit.history import FileHistory
             from prompt_toolkit.auto_suggest import AutoSuggestFromHistory
-            import ffmpeg
 
             try:
                 import rich
@@ -89,22 +88,21 @@ try:
                         print(f" ! Required packages: rich, pillow, prompt_toolkit, term-image, ffmpeg-python")
                         exit()
                 if sys.platform in ["linux", "linux2"]:
-                    print(" ! Auto installation with pip falied! Trying to install with system package manager..."); time.sleep(2)
                     try:
-                        subprocess.run(["sudo", "pacman", "-Syu"])
+                        subprocess.run(["sudo", "pacman", "-Syu"], check=True, shell=True)
                     except subprocess.CalledProcessError:
                         try:
                             print(f"\n # Installing Components (APT)..."); time.sleep(0.3)
-                            subprocess.run(['sudo', 'apt', 'update', '&&', 'sudo', 'apt', 'upgrade'], shell=True)
-                            subprocess.run(['sudo', 'apt', 'install', 'python3-requests', 'python3-prompt_toolkit', 'python3-rich', 'python3-term-image', 'python3-pillow'], shell=True)
-                            print(f"\n # If the installation error occurs, you can install it manually")
-                            for i, h in enumerate(['Requests', 'Prompt Toolkit', 'Rich', 'Pillow', 'Term-Image'], 1): 
-                                print(f" {i}. {h}")
+                            subprocess.run(['sudo', 'apt', 'update', '&&', 'sudo', 'apt', 'upgrade'], shell=True, check=True)
+                            subprocess.run(['sudo', 'apt', 'install', 'python3-requests', 'python3-prompt-toolkit', 'python3-rich', 'python3-term-image', 'python3-pillow'], shell=True)
 
                             print (f"\n # Components installation successfuly")
                             print (f" # You can use this tools btw"); time.sleep(0.4)
                             exit()
                         except subprocess.CalledProcessError:
+                            print(f"\n # If the installation error occurs, you can install it manually")
+                            for i, h in enumerate(['Requests', 'Prompt Toolkit', 'Rich', 'Pillow', 'Term-Image'], 1): 
+                                print(f" {i}. {h}")
                             print (f"\n ! APT or Pacman package manager is not working properly! Please install the required packages manually and restart the program."); exit()
 
                     paru = shutil.which("paru")
