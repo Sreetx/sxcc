@@ -2,12 +2,13 @@
 Sreetx Cross Cursor Converter! Easy to USE!
 
 Use any type of cursor theme from anywhere!
-With this tool you can convert .ani (Windows) files to .cur which can be used in linux!
+With this tool you can convert .ani (Windows) files to XCurosrs (Linux) which can be used in linux!
 Let's bring your favorite waifu to the Linux world through cursors!
 
 # Donate
 
 You can donate here: https://saweria.co/linggachannel
+
 Subscribe my Channel!: https://youtube.com/@linggachannel4781
 
 # Installation
@@ -39,3 +40,4 @@ Dependencies will be installed automatically when you run the tool. For operatin
 3. Python-rich
 4. Python-prompt_toolkit
 5. python-term-image
+6. Xcursorgen
