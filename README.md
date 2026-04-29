@@ -15,7 +15,7 @@ Let's bring your favorite waifu to the Linux world through cursors!
 
 For Linux Distro:
 
-    curl -sSL https://raw.githubusercontent.com/Sreetx/sxcc/main/install.sh | bash
+    curl -sSL https://raw.githubusercontent.com/Sreetx/sxcc/refs/heads/master/install.sh | sh
 
 Run Tools!
 
