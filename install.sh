@@ -55,13 +55,13 @@ install_dependencies
 
 # 3. CLONE/UPDATE REPO KE /OPT
 echo -e "${BIRU} [#] Setting up system-wide installation... ${NORMAL}"
-if [ -d "/tmp/sytd-build" ]; then
-    sudo rm -rf /tmp/sytd-build
+if [ -d "/tmp/sxcc-build" ]; then
+    sudo rm -rf /tmp/sxcc-build
 fi
 
-git clone "$REPO_URL" /tmp/sytd-build
+git clone "$REPO_URL" /tmp/sxcc-build
 sudo mkdir -p "$INSTALL_PATH"
-sudo cp -r /tmp/sytd-build/* "$INSTALL_PATH/"
+sudo cp -r /tmp/sxcc-build/* "$INSTALL_PATH/"
 
 # 4. BIKIN COMMAND DI /BIN (WRAPPER)
 echo -e "${BIRU} [#] Creating global command 'sxcc'... ${NORMAL}"
