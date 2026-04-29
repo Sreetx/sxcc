@@ -245,17 +245,20 @@ def main():
             f.write(cursors_name)
 
         if choice == "1":
-            rprint("\n [black on orange1] # [/black on orange1] Extracting frames from .ani file..."); time.sleep (2)
-            from Assets.Engine.extractor_ani import ekstrak
-            ekstrak()
+            if sys.platform in ["linux", "linux2"]:
+                rprint("\n [black on orange1] # [/black on orange1] Extracting frames from .ani file..."); time.sleep (2)
+                from Assets.Engine.extractor_ani import ekstrak
+                ekstrak()
 
-            rprint("\n [black on orange1] # [/black on orange1] Converting .cur frames to .png...\n"); time.sleep(2)
-            from Assets.Engine.converter import convert_cur_to_png
-            convert_cur_to_png()
+                rprint("\n [black on orange1] # [/black on orange1] Converting .cur frames to .png...\n"); time.sleep(2)
+                from Assets.Engine.converter import convert_cur_to_png
+                convert_cur_to_png()
 
-            rprint("\n [black on orange1] # [/black on orange1] Building XCursor files...\n"); time.sleep(2)
-            from Assets.Engine.compiler import compiler_xcur
-            compiler_xcur()
+                rprint("\n [black on orange1] # [/black on orange1] Building XCursor files...\n"); time.sleep(2)
+                from Assets.Engine.compiler import compiler_xcur
+                compiler_xcur()
+            else:
+                rprint("\n [black on green]*[/] This feature is currently only supported on Linux. Please check back later for updates!"); exit()
 
         elif choice == "2":
             rprint("\n [*] This feature is currently under development. Please check back later!")
