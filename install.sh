@@ -66,6 +66,7 @@ sudo cp -r /tmp/sxcc-build/* "$INSTALL_PATH/"
 # 4. BIKIN COMMAND DI /BIN (WRAPPER)
 echo -e "${BIRU} [#] Creating global command 'sxcc'... ${NORMAL}"
 cat <<EOF | sudo tee /usr/bin/$NAMA_COMMAND > /dev/null
+python3 $INSTALL_PATH/$SCRIPT_UTAMA "\$@"
 #!/bin/bash
 # Menjalankan tools dari folder /opt agar aset tetap terbaca
 EOF
