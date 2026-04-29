@@ -84,6 +84,10 @@ try:
                     try:
                         subprocess.run([sys.executable, "-m", "pip", "install", "requests", "rich", "prompt_toolkit", "term-image", "pillow", "ffmpeg-python"], check=True)
                         print(f"\n # Packages installed successfully! Please restart the program."); exit()
+                    except subprocess.CalledProcessError:
+                        print(f"\n ! Automatic installation failed! Please install the required packages manually and restart the program.")
+                        print(f" ! Required packages: rich, pillow, prompt_toolkit, term-image, ffmpeg-python")
+                        exit()
                 if sys.platform in ["linux", "linux2"]:
                     print(" ! Auto installation with pip falied! Trying to install with system package manager..."); time.sleep(2)
                     try:
