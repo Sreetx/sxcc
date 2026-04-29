@@ -222,10 +222,10 @@ def main():
         lists = Table(show_header=False, show_edge=False, pad_edge=False, box=None)
     
         rprint("\n[orange1] > [/orange1]Select an options.\n")
-        lists.add_row("[bold green] 1 [/bold green]", "Convert", ".ani", "to", ".cur")
-        lists.add_row("[bold green] 2 [/bold green]", "Convert", ".cur", "to", ".ani")
+        lists.add_row("[bold green] 1 [/bold green]", "Convert", ".ani", "to", "XCur")
+        lists.add_row("[bold green] 2 [/bold green]", "Convert", "XCur", "to", ".ani")
         lists.add_row("[bold green] 3 [/bold green]", "Convert", ".GIF", "to", ".ani")
-        lists.add_row("[bold green] 4 [/bold green]", "Convert", ".GIF", "to", ".cur\n")
+        lists.add_row("[bold green] 4 [/bold green]", "Convert", ".GIF", "to", "XCur\n")
         console.print(lists)
 
     # Cache history
