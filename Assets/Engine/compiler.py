@@ -79,6 +79,8 @@ HOTSPOT_SPECIAL = {
     "vertical" : (half, half),
     "diagonal1" : (half, half),
     "diagonal2" : (half, half),
+    "person" : (4, 4),
+    "pin": (4, 11),
 }
 # Penamaan tema kursor
 with open(name_dir, 'r', encoding='UTF-8') as f:
