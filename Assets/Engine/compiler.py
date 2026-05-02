@@ -49,7 +49,7 @@ half = size // 2
 setengah = half // 2
 
 CURSOR_MAPPING = {
-    "normal": ["left_ptr", "default", "arrow", "top_left_arrow", "alias", "b66166c04f8c3109214a4fbd64a50fc8", "center_ptr", "context-menu", "d9ce0ab605698f320427677b458ad60b", "right_ptr", "size-bdiag", "size-fdiag", "size-ndia", "size-nesw", "size-nwse", "size-all", "up-arrow"],
+    "normal": ["left_ptr", "default", "arrow", "top_left_arrow", "alias", "b66166c04f8c3109214a4fbd64a50fc8", "context-menu", "d9ce0ab605698f320427677b458ad60b", "size-bdiag", "size-fdiag", "size-ndia", "size-nesw", "size-nwse", "size-all"],
     "link": ["hand2", "pointing_hand", "6430b46141f100e14c45121c210874e4", "b66166444125010022004241001a4768", "copy", "dnd-copy", "dnd-link", "dnd-move", "dnd-none", "e29285e634086352946a0e7090d73106", "hand1", "link", "pointer"],
     "busy": ["wait", "watch", "0426c178a3d1912440f09a0000000000", "spinning"],
     "working": ["left_ptr_watch", "progress", "3ecb6120745662f87724a141450a241d", "half-busy", "left_ptr_watch", "left_ptr_progress"],
@@ -57,14 +57,14 @@ CURSOR_MAPPING = {
     "unavailable": ["circle", "crossed", "not-allowed", "03b6e0fcb3499374a867c041f52298f", "crossed_circle", "dnd-no-drop", "forbidden", "prohibited", "no-drop"],
     "help": ["question_arrow", "help", "whats_this", "d9ce0ab4e3f143c393bc1440003208b3", "left_ptr_help", "help_center"],
     "move": ["move", "fleur", "all-scroll", "d4c3b1e7a9f100e14c45121c210874e4", "close_hand", "open_hand", "grab", "grabbing"],
-    "horizontal": ["h_double_arrow", "size_hor", "sb_h_double_arrow", "col-resize", "left_side", "right_side", "e-resize", "ew-resize", "w-resize"],
-    "vertical": ["h_double_arrow", "size_hor", "sb_h_double_arrow", "col-resize", "left_side", "right_side", "bottom_side", "n-resize", "ns-resize", "top_side", "row-resize", "s-resize"],
+    "horizontal": ["h_double_arrow", "size_hor", "sb_h_double_arrow", "col-resize", "e-resize", "ew-resize", "w-resize", "left_side", "right_side"],
+    "vertical": ["v_double_arrow", "size_ver", "sb_v_double_arrow", "row-resize", "n-resize", "ns-resize", "s-resize", "top_side", "bottom_side"],
     "pin": ["location", "pin", "map", "d9ce0ab4e3f143c393bc1440003208b3", "color-picker"],
     "precision": ["crosshair", "cross", "tcross", "cross_reverse", "cell", "plus", "precision", "zoom-in", "zoom-out"],
     "handwriting": ["pencil", "draft", "fossil"],
-    "alternate": ["up_arrow", "center_ptr"],
-    "diagonal1": ["nwse-resize", "size_bdiag", "top_left_corner", "bottom_right_corner", "bd_double_arrow", "nw-resize", "size_fdiag", "se-resize"],
-    "diagonal2": ["nesw-resize", "size_fdiag", "top_right_corner", "bottom_left_corner", "fd_double_arrow", "ne-resize", "size_bdiag", "sw-resize"],
+    "alternate": ["up_arrow", "center_ptr", "right_ptr"],
+    "diagonal1": ["size_bdiag", "nwse-resize", "top_left_corner", "bottom_right_corner", "bd_double_arrow", "nw-resize", "se-resize"],
+    "diagonal2": ["size_fdiag", "nesw-resize", "top_right_corner", "bottom_left_corner", "fd_double_arrow", "ne-resize", "sw-resize"],
 }
 
 HOTSPOT_SPECIAL = {
@@ -101,38 +101,45 @@ def compiler_xcur():
     output_path = os.path.expanduser(os.path.join("~", "Downloads", f"{name_cursors}", "cursors"))
 
     output_path_up = os.path.expanduser(os.path.join("~", "Downloads", f"{name_cursors}"))
-
-    key_type = name_file.lower()
-
-    # Tulis konfig kursor
-    conf_path = os.path.join(png_dir, "cursor.conf")
-    png_files = sorted([p for p in os.listdir(png_dir) if p.endswith('.png')])
-
-    x_hot, y_hot = HOTSPOT_SPECIAL.get(name_file, (1, 1))
-
-    with open(conf_path, 'w') as f:
-        for p in png_files:
-            f.write(f"{size} {x_hot} {y_hot} {os.path.join(png_dir, p)} 70\n")
-
-    # Panggil xcursorgen untuk buat XCursor
-    try:
-        master = os.path.join(png_dir, "master")
-        subprocess.run(['xcursorgen', str(conf_path), master], check=True)
-        aliases = CURSOR_MAPPING.get(key_type.lower(), [key_type])
-        for alias in aliases:
-            dest_path = os.path.join(output_path, alias)
-            shutil.copy2(master, dest_path)
-
-    except subprocess.CalledProcessError as e:
-        rprint(f"[white on red] FAIL [/] Error during XCursor generation: {e}")
-    
     with open(os.path.join(output_path_up, "index.theme"), 'w') as f:
         f.write(INDEX_THEME)
+
+    for folder_name in os.listdir(png_dir):
+        current_png_dir = os.path.join(png_dir, folder_name)
+        if not os.path.isdir(current_png_dir): continue
+        rprint('')
+        rprint (f' [black on cyan]*[/] Building {folder_name}'); time.sleep(1)
+        
+        key_type = folder_name.lower()
+        png_files = sorted([p for p in os.listdir(current_png_dir) if p.endswith('.png')])
+        if not png_files: continue
+
+        conf_path = os.path.join(current_png_dir, "cursor.conf")
+        x_hot, y_hot = HOTSPOT_SPECIAL.get(folder_name.lower(), (1, 1))
+
+        with open(conf_path, 'w') as f:
+            for p in png_files:
+                f.write(f"{size} {x_hot} {y_hot} {os.path.join(current_png_dir, p)} 70\n")
+
+        try:
+            master = os.path.join(current_png_dir, "master")
+            subprocess.run(['xcursorgen', str(conf_path), master], check=True)
+            
+            # Gunakan CURSOR_MAPPING untuk mendapatkan alias
+            aliases = CURSOR_MAPPING.get(key_type, [key_type])
+            for alias in aliases:
+                dest_path = os.path.join(output_path, alias)
+                shutil.copy2(master, dest_path)
+            
+            rprint(f"[green] + [/] Alias created for {folder_name}: {', '.join(aliases)}")
+
+        except subprocess.CalledProcessError as e:
+            rprint(f"[white on red] FAIL [/] Error during XCursor generation for {folder_name}: {e}")
 
     if os.path.exists(png_dir):
         shutil.rmtree(png_dir)
     if os.path.exists(cur_dir):
         shutil.rmtree(cur_dir)
 
-    rprint(f"[bold cyan]![/] XCursor created with [yellow]Xcursorgen[/]: {output_path}")
-    rprint(f"[bold cyan]![/] Successfully created cursor file: {', '.join(aliases)}")
+    rprint(f"\n[bold cyan]![/] XCursor created with [yellow]Xcursorgen[/]: {output_path_up}")
+    rprint(f"[bold cyan]![/] You can copy the folder to /usr/share/icons so that the cursor can be used.")

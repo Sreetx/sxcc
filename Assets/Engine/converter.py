@@ -27,45 +27,35 @@ tmp_dir = tempfile.gettempdir()
 if not os.path.exists(os.path.join(tmp_dir, "sxcc", "extracted_frames", "png")):
     os.makedirs(os.path.join(tmp_dir, "sxcc", "extracted_frames", "png"), exist_ok=True)
 
-png_dir = os.path.join(tmp_dir, "sxcc", "extracted_frames", "png")
-cur_dir = os.path.join(tmp_dir, "sxcc", "extracted_frames", "cur")
+root_png = os.path.join(tmp_dir, "sxcc", "extracted_frames", "png")
+root_cur = os.path.join(tmp_dir, "sxcc", "extracted_frames", "cur")
 
 def convert_cur_to_png():
-    cur_files = sorted([f for f in os.listdir(cur_dir) if f.endswith('.cur')])
-    total = len(cur_files)
-    index = 0
-    while index < total:
-        filename = cur_files[index]
-        cur_path = os.path.join(cur_dir, filename)
-        png_name = f"frame_{index+1:03d}.png"
-        png_path = os.path.join(png_dir, png_name)
+    for folder_name in os.listdir(root_cur):
+        cur_dir = os.path.join(root_cur, folder_name)
+        png_dir = os.path.join(root_png, folder_name)
 
-        try:
-            with Image.open(str(cur_path)) as img:
-                img = img.convert("RGBA")
-                datas = img.getdata()
+        if not os.path.isdir(cur_dir): continue
 
-                rgba_img = img.convert("RGBA")
+        # Buat Folder Mirror
+        os.makedirs(png_dir, exist_ok=True)
+        rprint(f'\n[black on cyan] * [/] Converting Folder: {folder_name}\n'); time.sleep(2)
+        cur_files = sorted([f for f in os.listdir(cur_dir) if f.endswith('.cur')])
 
-                datas = rgba_img.getdata()
-                new_data = []
+        for index, filename in enumerate(cur_files):
+            cur_path = os.path.join(cur_dir, filename)
+            png_path = os.path.join(png_dir, f"frame_{index+1:03d}.png")
 
-                for item in datas:
-                    if item[0] < 2 and item[1] < 2 and item[2] < 2:
-                        new_data.append((0, 0, 0, 0))
-                    else:
-                        new_data.append(item)
-                rgba_img.putdata(new_data)
-                rgba_img.save(str(png_path), "PNG")
-            
-            # [/] buat reset tema universal
-            rprint(f"[black on green]#[/] Converting frame {index+1:03d} [dim]→[/] [green]{png_name}[/]")
-            time.sleep(0.1) 
-            
-        except Exception as e:
-            rprint(f"[white on red] FAIL [/] {filename}: {e}")
-            rprint(' [*] Skipping this frame and moving to the next one.')
+            try:
+                with Image.open(cur_path) as img:
+                    rgba_img = img.convert("RGBA")
+                    datas = rgba_img.getdata()
+                    new_data = [(0, 0, 0, 0) if (item[0] < 2 and item[1] < 2 and item[2] < 2) else item for item in datas]
+                    rgba_img.putdata(new_data)
+                    rgba_img.save(png_path, "PNG")
 
-        index += 1
+                    rprint(f' [black on green]*[/] Converting {filename} [dim]→[/] frame_{index+1:03d}.png'); time.sleep(0.1)
+            except Exception as e:
+                rprint(f"[black on red] FAIL [/] {filename}: {e}")
 
-    rprint(f"\n[bold green] * [/bold green][orange1]{total}[/orange1] frames converted to PNG in: {png_dir}")
+    rprint(f'\n[black on green] * [/] All frames saved in {root_png}')
