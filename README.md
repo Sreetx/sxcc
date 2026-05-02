@@ -31,6 +31,8 @@ For non-Linux distro:
 
 Can run on Linux, Android (Termux), and Windows (Eksperimental)
 
+For automatic installation via apt it is still in the EXPERIMENTAL period!
+
 # Deps
 
 Dependencies will be installed automatically when you run the tool. For operating systems that aren't automatically installed, please install them manually!
