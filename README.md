@@ -5,6 +5,13 @@ Use any type of cursor theme from anywhere!
 With this tool you can convert .ani (Windows) files to XCurosrs (Linux) which can be used in linux!
 Let's bring your favorite waifu to the Linux world through cursors!
 
+# Changelog
+
+    1.0 #Beta - Legacy version
+    1.3 #Beta - Fixing Bug
+    2.4 #Beta - Added recursive conversion support to the tool
+                fixing bug automatic installation
+
 # Support the Project!
 
 * **Saweria:** https://saweria.co/linggachannel
@@ -31,7 +38,7 @@ For non-Linux distro:
 
 Can run on Linux, Android (Termux), and Windows (Eksperimental)
 
-For automatic installation via apt it is still in the EXPERIMENTAL period!
+For automatic installation via other than pacman it is the EXPERIMENTAL period!
 
 # Deps
 
