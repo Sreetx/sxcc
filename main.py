@@ -113,7 +113,7 @@ try:
                         rprint (f" * Found {cmd_name}")
                         rprint (f' * Trying installing and update available packages!')
                         try:
-                            subprocess.run([cmd_name, '-Syu', 'python-pillow', 'python-requests', 'python-term-image', 'python-prompt_toolkit', 'python-rich', '--noconfirm'], shell=True, check=True)
+                            subprocess.run([cmd_name, '-Syu', 'python-pillow', 'python-requests', 'python-term-image', 'python-prompt_toolkit', 'python-rich', 'xorg-xcursorgen', '--noconfirm'], check=True)
                             print('\n # Installation Done! you can restart this tools!'), sys.exit()
                         except Exception as e:
                             print (f' ! {e}')
@@ -122,7 +122,7 @@ try:
                         rprint (f" * Found {cmd_name}")
                         rprint (f' * Trying installing and update available packages!')
                         try:
-                            subprocess.run(['sudo', cmd_name, '-Syu', 'python-pillow', 'python-requests', 'python-term-image', 'python-prompt_toolkit', 'python-rich', '--noconfirm'], shell=True, check=True)
+                            subprocess.run(['sudo', cmd_name, '-Syu', 'python-pillow', 'python-requests', 'python-term-image', 'python-prompt_toolkit', 'python-rich', 'xorg-xcursorgen', '--noconfirm'] check=True)
                             print('\n # Installation Done! you can restart this tools!'), sys.exit()
                         except Exception as e:
                             print (f' ! {e}')
@@ -131,7 +131,9 @@ try:
                         rprint (f" * Found {cmd_name}")
                         rprint (f' * Trying installing and update available packages!')
                         try:
-                            subprocess.run(['sudo', cmd_name, 'update', '&&', 'sudo', cmd_name, 'upgrade', '&&', 'sudo', cmd_name, 'install', 'python-requests', 'python-rich', 'python-term-image', 'python-prompt-toolkit'], shell=True, check=True)
+                            subprocess.run(['sudo', cmd_name, 'update'], check=True)
+                            subprocess.run(['sudo', cmd_name, 'upgrade'], check=True)
+                            subprocess.run(['sudo', cmd_name, 'install', 'python-requests', 'python-rich', 'python-term-image', 'python-prompt-toolkit', 'xcursorgen'])
                             print('\n # Installation Done! you can restart this tools!'), sys.exit()
                         except Exception as e:
                             print (f' {e}')
@@ -140,7 +142,7 @@ try:
                         rprint (f" * Found {cmd_name}")
                         rprint (f' * Trying installing and update available packages!')
                         try:
-                            subprocess.run([cmd_name, 'install', 'python3-pillow', 'python3-requests', 'python3-rich', 'python3-prompt-toolkit'], shell=True, check=True)
+                            subprocess.run([cmd_name, 'install', 'python3-pillow', 'python3-requests', 'python3-rich', 'python3-prompt-toolkit'], check=True)
                             print('\n # Installation Done! you can restart this tools!'), sys.exit()
                         except Exception as e:
                             print (f' {e}')
@@ -149,7 +151,7 @@ try:
                         rprint (f" * Found {cmd_name}")
                         rprint (f' * Trying installing and update available packages!')
                         try:
-                            subprocess.run(['sudo', cmd_name, 'install', 'python3-Pillow', 'python3-requests', 'python3-rich', 'python3-prompt_toolkit'], shell=True, check=True)
+                            subprocess.run(['sudo', cmd_name, 'install', 'python3-Pillow', 'python3-requests', 'python3-rich', 'python3-prompt_toolkit'], check=True)
                             print('\n # Installation Done! you can restart this tools!'), sys.exit()
                         except Exception as e:
                             print (f' {e}')
