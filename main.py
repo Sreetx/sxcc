@@ -109,7 +109,7 @@ try:
                     
                     pm_cmd, distro = get_package_manager()
                     cmd_name = os.path.basename(pm_cmd) 
-                    if cmd_name in ['pacman', 'yay', 'paru']:
+                    if cmd_name in ['yay', 'paru']:
                         rprint (f" * Found {cmd_name}")
                         rprint (f' * Trying installing and update available packages!')
                         try:
