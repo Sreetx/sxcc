@@ -46,6 +46,7 @@ hotspot_x = 0
 hotspot_y = 0
 size = 32
 half = size // 2
+setengah = half // 2
 
 CURSOR_MAPPING = {
     "normal": ["left_ptr", "default", "arrow", "top_left_arrow", "alias", "b66166c04f8c3109214a4fbd64a50fc8", "center_ptr", "context-menu", "d9ce0ab605698f320427677b458ad60b", "right_ptr", "size-bdiag", "size-fdiag", "size-ndia", "size-nesw", "size-nwse", "size-all", "up-arrow"],
@@ -69,6 +70,9 @@ CURSOR_MAPPING = {
 HOTSPOT_SPECIAL = {
     "precision" : (5, 6),
     "text" : (4, 8),
+    "link" : (5, 1),
+    "unavailable" : (setengah, setengah),
+    "alternate" : (5, 2),
     "busy" : (half, half),
     "move" : (half, half),
     "horizontal" : (half, half),
@@ -102,7 +106,7 @@ def compiler_xcur():
     conf_path = os.path.join(png_dir, "cursor.conf")
     png_files = sorted([p for p in os.listdir(png_dir) if p.endswith('.png')])
 
-    x_hot, y_hot = HOTSPOT_SPECIAL.get(key_type, (0, 0))
+    x_hot, y_hot = HOTSPOT_SPECIAL.get(name_file, (1, 1))
 
     with open(conf_path, 'w') as f:
         for p in png_files:
