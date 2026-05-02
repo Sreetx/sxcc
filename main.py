@@ -78,108 +78,87 @@ try:
             rprint("\n * Required packages are missing!")
             chos = input(" ? Do you want to install the required packages now? (Y/n): ").strip()
             if chos.upper() == "Y":
-                rprint(" * Installing packages...")
-                if sys.platform in ["win32", "win"]:
-                    try:
-                        subprocess.run([sys.executable, "-m", "pip", "install", "requests", "rich", "prompt_toolkit", "term-image", "pillow", "ffmpeg-python"], check=True)
-                        print(f"\n # Packages installed successfully! Please restart the program."); exit()
-                    except subprocess.CalledProcessError:
-                        print(f"\n ! Automatic installation failed! Please install the required packages manually and restart the program.")
-                        print(f" ! Required packages: rich, pillow, prompt_toolkit, term-image, ffmpeg-python")
-                        exit()
                 if sys.platform in ["linux", "linux2"]:
-                    try:
-                        subprocess.run(["sudo", "pacman", "-Syu"], check=True, shell=True)
-                    except subprocess.CalledProcessError:
-                        try:
-                            print(f"\n # Installing Components (APT)..."); time.sleep(0.3)
-                            subprocess.run(['sudo', 'apt', 'update', '&&', 'sudo', 'apt', 'upgrade'], shell=True, check=True)
-                            subprocess.run(['sudo', 'apt', 'install', 'python3-requests', 'python3-prompt-toolkit', 'python3-rich', 'python3-term-image', 'python3-pillow'], shell=True)
-
-                            print (f"\n # Components installation successfuly")
-                            print (f" # You can use this tools btw"); time.sleep(0.4)
-                            exit()
-                        except subprocess.CalledProcessError:
-                            print(f"\n # If the installation error occurs, you can install it manually")
-                            for i, h in enumerate(['Requests', 'Prompt Toolkit', 'Rich', 'Pillow', 'Term-Image'], 1): 
-                                print(f" {i}. {h}")
-                            print (f"\n ! APT or Pacman package manager is not working properly! Please install the required packages manually and restart the program."); exit()
-
-                    paru = shutil.which("paru")
-                    yay = shutil.which("yay")
-                    if paru and yay:
-                        print (f"\n * Many AUR helper found!")
-                        for i, h in enumerate(['paru', 'yay'], 1): 
-                            print(f" {i}. {h}")
-                        
-                        choice = str(input(f" ? Choose one: "))
-                        if choice.lower() == "1":
-                            helper = paru
-                        elif choice.lower() == "2":
-                            helper = yay
-                        else:
-                            print(f" # Please select one!")
-                            exit()
-                    elif paru:
-                        helper = paru
-                    elif yay:
-                        helper = yay
-                        
-                    else:
-                        print(f"\n ! AUR helper not found! please install yay or paru")
-
-                    helper_list = helper.split('/')[-1]
-
-                    print(f"\n # Installing Components ({helper_list})..."); time.sleep(0.3)
-                    try:
-                        subprocess.run([helper, '-S', 'python-requests', 'python-rich', 'python-prompt_toolkit', 'python-term-image', 'python-pillow', '--noconfirm'], check=True)
-                    except Exception as e:
-                        print(f" ! Something went wrong!")
-                        print(e)
-                        exit()
-                        rprint (" * Checking for xcursorgen dependency..."); time.sleep(1)
-
-                    if not shutil.which("xcursorgen"):
-                        managers = {
-                            "pacman": "xorg-xcursorgen",
-                            "apt-get": "x11-apps",
-                            "dnf": "xcursorgen",
-                            "zypper": "xcursorgen"
-                            }
-                        found_pm = None
-                        package_to_install = None
-                        for pm, pkg in managers.items():
-                            if shutil.which(pm):
-                                found_pm = pm
-                                package_to_install = pkg
-                                break
-
-                        cmd = ["sudo", found_pm]
-                            
-                        if found_pm == "pacman":
-                            cmd.extend(["-S", "--noconfirm", package_to_install])
-                        elif found_pm == "apt-get":
-                            subprocess.run(["sudo", "apt-get", "update"], check=True)
-                            cmd.extend(["install", "-y", package_to_install])
-                        else:
-                            print (f"\n ! Xcursorgen auto installation is only supported on Pacman and APT package manager! Please install xcursorgen manually and restart the program."); time.sleep(2)
-
-                        try:
-                            subprocess.run(cmd, check=True)
-                        except subprocess.CalledProcessError as e:
-                            rprint(f"[white on red] FAIL [/] Error installing {package_to_install}: {e}")
-                        rprint(f"SUCCESS {package_to_install} is installed and ready to use!"); exit()
-                    else:
-                        pass
+                    cmd_add = '--break-system-packages'
                 else:
-                    print(f"\n ! Automatic installation is only supported on Linux! Please install the required packages manually and restart the program.")
-                    print(f" ! Required packages: rich, pillow, prompt_toolkit, term-image, ffmpeg-python")
-                    exit()
+                    cmd_add = ""
+                rprint(" * Installing packages...")
+                try:
+                    subprocess.run([sys.executable, "-m", "pip", "install", "requests", "rich", "prompt_toolkit", "term-image", "pillow", cmd_add])
+                except subprocess.CalledProcessError:
+                    pass
 
-                rprint(" * Packages installed successfully! Please restart the program."); exit()
-            else: 
-                rprint(" (*) Cannot run the program without installing the required packages. Exiting.")
-                exit()
+                if sys.platform in ['linux', 'linux2']:
+                    rprint(f' * Checking modules installed with package manager!')
+                    def get_package_manager():
+                    # Daftar manager yang didukung, urutan menentukan prioritas
+                        managers = {
+                            "pacman": "Arch/Manjaro/CachyOS",
+                            "yay" : "Arch",
+                            "paru" : "Arch",
+                            "apt": "Debian/Ubuntu/Mint",
+                            "dnf": "Fedora/RHEL",
+                            "zypper": "openSUSE"
+                            }
+                    
+                        for pm, distro in managers.items():
+                            if shutil.which(pm):
+                                return pm, distro
+                            
+                        return None, None
+                    
+                    pm_cmd, distro = get_package_manager()
+                    cmd_name = os.path.basename(pm_cmd) 
+                    if cmd_name in ['pacman', 'yay', 'paru']:
+                        rprint (f" * Found {cmd_name}")
+                        rprint (f' * Trying installing and update available packages!')
+                        try:
+                            subprocess.run([cmd_name, '-Syu', 'python-pillow', 'python-requests', 'python-term-image', 'python-prompt_toolkit', 'python-rich', '--noconfirm'], shell=True, check=True)
+                            print('\n # Installation Done! you can restart this tools!'), sys.exit()
+                        except Exception as e:
+                            print (f' ! {e}')
+                            exit()
+                    elif cmd_name == 'pacman':
+                        rprint (f" * Found {cmd_name}")
+                        rprint (f' * Trying installing and update available packages!')
+                        try:
+                            subprocess.run(['sudo', cmd_name, '-Syu', 'python-pillow', 'python-requests', 'python-term-image', 'python-prompt_toolkit', 'python-rich', '--noconfirm'], shell=True, check=True)
+                            print('\n # Installation Done! you can restart this tools!'), sys.exit()
+                        except Exception as e:
+                            print (f' ! {e}')
+                            exit()
+                    elif cmd_name == 'apt':
+                        rprint (f" * Found {cmd_name}")
+                        rprint (f' * Trying installing and update available packages!')
+                        try:
+                            subprocess.run(['sudo', cmd_name, 'update', '&&', 'sudo', cmd_name, 'upgrade', '&&', 'sudo', cmd_name, 'install', 'python-requests', 'python-rich', 'python-term-image', 'python-prompt-toolkit'], shell=True, check=True)
+                            print('\n # Installation Done! you can restart this tools!'), sys.exit()
+                        except Exception as e:
+                            print (f' {e}')
+                            exit()
+                    elif cmd_name == 'dnf':
+                        rprint (f" * Found {cmd_name}")
+                        rprint (f' * Trying installing and update available packages!')
+                        try:
+                            subprocess.run([cmd_name, 'install', 'python3-pillow', 'python3-requests', 'python3-rich', 'python3-prompt-toolkit'], shell=True, check=True)
+                            print('\n # Installation Done! you can restart this tools!'), sys.exit()
+                        except Exception as e:
+                            print (f' {e}')
+                            exit()
+                    elif cmd_name == "zypper":
+                        rprint (f" * Found {cmd_name}")
+                        rprint (f' * Trying installing and update available packages!')
+                        try:
+                            subprocess.run(['sudo', cmd_name, 'install', 'python3-Pillow', 'python3-requests', 'python3-rich', 'python3-prompt_toolkit'], shell=True, check=True)
+                            print('\n # Installation Done! you can restart this tools!'), sys.exit()
+                        except Exception as e:
+                            print (f' {e}')
+                            exit()
+                    else:
+                        rprint (f' * Package manager not found or not supported!')
+            
+                print(" # Installation Succesfully, restart this tools!"); exit()
+                
 except Exception as e:
     stop_event.set()
     rprint(f"\n[bold red]![/bold red] An error occurred during import: {e}")
@@ -215,6 +194,34 @@ except (KeyboardInterrupt, OSError):
 
 stop_event.set()
 
+# Fungsi Rekursif
+def recursive_input(mentah, extension=None):
+    """
+    Mencari file berdasarkan input user (file, folder, atau wildcard).
+    Return: list of Path objects.
+    """
+    search_path = Path(mentah).expanduser()
+    found_files = []
+
+    # 1. Jika inputnya adalah file spesifik
+    if search_path.is_file():
+        if search_path.suffix.lower() == extension:
+            found_files.append(search_path.resolve())
+    
+    # 2. Jika inputnya folder atau mengandung wildcard
+    else:
+        # Jika user kasih folder, tambahkan wildcard ke belakang
+        if search_path.is_dir():
+            pattern = f"**/*{extension}"
+        else:
+            # Jika user sudah kasih pattern (misal *.ani), pakai itu saja
+            pattern = search_path.name
+            search_path = search_path.parent
+            
+        found_files.extend(search_path.rglob(pattern))
+    
+    return [f.resolve() for f in found_files]
+
 # Main tools
 banner()
 def main():
@@ -234,28 +241,32 @@ def main():
         history_name = FileHistory(os.path.join(tmp_dir, "sxcc", ".sxcc_history_name"))
 
         choice = prompt(HTML("<style fg='#fdb9c0'> ? </style>Please enter your choice: ")).strip()
-        mentah = prompt(HTML("<style fg='#fdb9c0'> > </style>Please enter the path to your input file (Can use '~' for home directory): "), history=history_file, auto_suggest=AutoSuggestFromHistory()).strip()
+        mentah = prompt(HTML("<style fg='#fdb9c0'> > </style>Please enter the path to your input file or folder (Can use '~' for home directory): "), history=history_file, auto_suggest=AutoSuggestFromHistory()).strip()
         cursors_name = prompt(HTML("<style fg='#fdb9c0'> > </style>Name of Cursors: "), history=history_name, auto_suggest=AutoSuggestFromHistory()).strip()
         mentah = os.path.expanduser(mentah)
+        sxcc_link = os.path.join(tmp_dir, "sxcc", "sxcc.link")
 
         path_jembatan = os.path.join(tmp_dir, "sxcc")
-        with open (os.path.join(str(path_jembatan), "sxcc.link"), 'w', encoding='UTF-8') as f:
-            f.write(mentah)
 
         with open (os.path.join(str(path_jembatan), "sxcc_history_name"), 'w', encoding='UTF-8') as f:
             f.write(cursors_name)
 
         if choice == "1":
+            file_list = recursive_input(mentah, extension=".ani")
+            with open (sxcc_link, 'w', encoding='UTF-8') as f:
+                for path in file_list:
+                    f.write(str(path) + '\n')
+
             if sys.platform in ["linux", "linux2"]:
                 rprint("\n [black on orange1] # [/black on orange1] Extracting frames from .ani file..."); time.sleep (2)
                 from Assets.Engine.extractor_ani import ekstrak
                 ekstrak()
 
-                rprint("\n [black on orange1] # [/black on orange1] Converting .cur frames to .png...\n"); time.sleep(2)
+                rprint("\n [black on orange1] # [/black on orange1] Converting .cur frames to .png..."); time.sleep(2)
                 from Assets.Engine.converter import convert_cur_to_png
                 convert_cur_to_png()
 
-                rprint("\n [black on orange1] # [/black on orange1] Building XCursor files...\n"); time.sleep(2)
+                rprint("\n [black on orange1] # [/black on orange1] Building XCursor files..."); time.sleep(2)
                 from Assets.Engine.compiler import compiler_xcur
                 compiler_xcur()
             else:
