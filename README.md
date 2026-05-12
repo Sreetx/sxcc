@@ -11,6 +11,8 @@ Let's bring your favorite waifu to the Linux world through cursors!
     1.3 #Beta - Fixing Bug
     2.4 #Beta - Added recursive conversion support to the tool
                 fixing bug automatic installation
+    2.5.1 #Beta - Fixing bug and replace cursor build method to clickgen (before Xcursorgen)
+                - Make SXCC better cross platform with clickgen 
 
 # Support the Project!
 
@@ -48,5 +50,5 @@ Dependencies will be installed automatically when you run the tool. For operatin
 2. Python-pillow
 3. Python-rich
 4. Python-prompt_toolkit
-5. python-term-image
-6. Xcursorgen
+5. Python-term-image
+6. Python-clickgen
