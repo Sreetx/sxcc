@@ -28,6 +28,8 @@ tmp_dir = tempfile.gettempdir()
 if not os.path.exists(os.path.join(tmp_dir, "sxcc")):
     os.makedirs(os.path.join(tmp_dir, "sxcc"), exist_ok=True)
 
+tmp_dir = tempfile.gettempdir()
+
 # Cek Dependensi
 try:
     def import_module():
@@ -73,6 +75,9 @@ try:
             global banner
             from Assets.warna import banner
 
+            from clickgen.parser import open_blob
+            from clickgen.writer import to_x11
+
         except ImportError:
             stop_event.set()
             rprint("\n * Required packages are missing!")
@@ -84,7 +89,7 @@ try:
                     cmd_add = ""
                 rprint(" * Installing packages...")
                 try:
-                    subprocess.run([sys.executable, "-m", "pip", "install", "requests", "rich", "prompt_toolkit", "term-image", "pillow", cmd_add])
+                    subprocess.run([sys.executable, "-m", "pip", "install", "requests", "rich", "prompt_toolkit", "term-image", "clickgen", "pillow", cmd_add])
                 except subprocess.CalledProcessError:
                     pass
 
@@ -113,7 +118,7 @@ try:
                         rprint (f" * Found {cmd_name}")
                         rprint (f' * Trying installing and update available packages!')
                         try:
-                            subprocess.run([cmd_name, '-Syu', 'python-pillow', 'python-requests', 'python-term-image', 'python-prompt_toolkit', 'python-rich', 'xorg-xcursorgen', '--noconfirm'], check=True)
+                            subprocess.run([cmd_name, '-Syu', 'python-pillow', 'python-requests', 'python-term-image', 'python-prompt_toolkit', 'python-rich', 'python-clickgen', '--noconfirm'], check=True)
                             print('\n # Installation Done! you can restart this tools!'), sys.exit()
                         except Exception as e:
                             print (f' ! {e}')
@@ -122,7 +127,7 @@ try:
                         rprint (f" * Found {cmd_name}")
                         rprint (f' * Trying installing and update available packages!')
                         try:
-                            subprocess.run(['sudo', cmd_name, '-Syu', 'python-pillow', 'python-requests', 'python-term-image', 'python-prompt_toolkit', 'python-rich', 'xorg-xcursorgen', '--noconfirm'], check=True)
+                            subprocess.run(['sudo', cmd_name, '-Syu', 'python-pillow', 'python-requests', 'python-term-image', 'python-prompt_toolkit', 'python-rich', '--noconfirm'], check=True)
                             print('\n # Installation Done! you can restart this tools!'), sys.exit()
                         except Exception as e:
                             print (f' ! {e}')
@@ -133,7 +138,7 @@ try:
                         try:
                             subprocess.run(['sudo', cmd_name, 'update'], check=True)
                             subprocess.run(['sudo', cmd_name, 'upgrade'], check=True)
-                            subprocess.run(['sudo', cmd_name, 'install', 'python-requests', 'python-rich', 'python-term-image', 'python-prompt-toolkit', 'xcursorgen'])
+                            subprocess.run(['sudo', cmd_name, 'install', 'python-requests', 'python-rich', 'python-term-image', 'python-prompt-toolkit'])
                             print('\n # Installation Done! you can restart this tools!'), sys.exit()
                         except Exception as e:
                             print (f' {e}')
@@ -259,20 +264,20 @@ def main():
                 for path in file_list:
                     f.write(str(path) + '\n')
 
-            if sys.platform in ["linux", "linux2"]:
-                rprint("\n [black on orange1] # [/black on orange1] Extracting frames from .ani file..."); time.sleep (2)
-                from Assets.Engine.extractor_ani import ekstrak
-                ekstrak()
+            rprint("\n [black on orange1] # [/black on orange1] Extracting frames from .ani file..."); time.sleep (2)
+            from Assets.Engine.extractor_ani import ekstrak
+            ekstrak()
 
-                rprint("\n [black on orange1] # [/black on orange1] Converting .cur frames to .png..."); time.sleep(2)
-                from Assets.Engine.converter import convert_cur_to_png
-                convert_cur_to_png()
+            rprint("\n [black on orange1] # [/black on orange1] Converting .cur frames to .png..."); time.sleep(2)
+            from Assets.Engine.converter import convert_cur_to_png
+            convert_cur_to_png()
 
-                rprint("\n [black on orange1] # [/black on orange1] Building XCursor files..."); time.sleep(2)
-                from Assets.Engine.compiler import compiler_xcur
-                compiler_xcur()
-            else:
-                rprint("\n [black on green]*[/] This feature is currently only supported on Linux. Please check back later for updates!"); exit()
+            rprint("\n [black on orange1] # [/black on orange1] Building XCursor files..."); time.sleep(2)
+            from Assets.Engine.compiler import compiler_xcur
+            compiler_xcur()
+            
+            if os.path.exists(os.path.join(tmp_dir, "sxcc", "extracted_frames")):
+                shutil.rmtree(os.path.join(tmp_dir, "sxcc", "extracted_frames"))
 
         elif choice == "2":
             rprint("\n [*] This feature is currently under development. Please check back later!")
@@ -284,7 +289,14 @@ def main():
             rprint("\n [*] Thank you for using Sreetx Cross Cursor! Goodbye!")
             exit()
     except (KeyboardInterrupt, EOFError):
+        if os.path.exists(os.path.join(tmp_dir, "sxcc", "extracted_frames")):
+            shutil.rmtree(os.path.join(tmp_dir, "sxcc", "extracted_frames"))
         rprint("\n [*] Exiting..."); sys.exit()
+    except Exception as e:
+        if os.path.exists(os.path.join(tmp_dir, "sxcc", "extracted_frames")):
+            shutil.rmtree(os.path.join(tmp_dir, "sxcc", "extracted_frames"))
+        rprint(f' [black on red]![/] {e}'); sys.exit()
+
 
 if __name__ == "__main__":
     main()
