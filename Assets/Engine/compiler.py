@@ -19,13 +19,17 @@
 
 # Import modul dasar
 
-import os, sys, time, threading, glob, subprocess, shutil, builtins, tempfile, struct
+import os, sys, time, threading, glob, shutil, builtins, tempfile, struct
 from pathlib import Path
 from rich.console import Console
 from rich.prompt import Prompt
 from rich.panel import Panel
 from rich.text import Text
 from rich import print as rprint
+
+# Modul Clickgen dari AUR dan PyPi versi waras. Jangan kau install yang legacy!
+from clickgen.parser import open_blob
+from clickgen.writer import to_x11
 
 tmp_file = tempfile.gettempdir()
 if not os.path.exists(os.path.join(tmp_file, "sxcc", "extracted_frames", "png")):
@@ -100,6 +104,8 @@ def compiler_xcur():
         os.makedirs(os.path.expanduser(os.path.join("~", "Downloads", f"{name_cursors}", "cursors")), exist_ok=True)
     output_path = os.path.expanduser(os.path.join("~", "Downloads", f"{name_cursors}", "cursors"))
 
+    if not os.path.exists(os.path.expanduser(os.path.join("~", "Downloads", f"{name_cursors}"))):
+        os.makedirs(os.path.expanduser(os.path.join("~", "Downloads", f"{name_cursors}")))
     output_path_up = os.path.expanduser(os.path.join("~", "Downloads", f"{name_cursors}"))
     with open(os.path.join(output_path_up, "index.theme"), 'w') as f:
         f.write(INDEX_THEME)
@@ -108,33 +114,29 @@ def compiler_xcur():
         current_png_dir = os.path.join(png_dir, folder_name)
         if not os.path.isdir(current_png_dir): continue
         rprint('')
-        rprint (f' [black on cyan]*[/] Building {folder_name}'); time.sleep(1)
+        rprint (f' [black on cyan]*[/] Building {folder_name} (Clickgen)'); time.sleep(1)
         
-        key_type = folder_name.lower()
-        png_files = sorted([p for p in os.listdir(current_png_dir) if p.endswith('.png')])
+        png_files = sorted([os.path.join(current_png_dir, p) for p in os.listdir(current_png_dir) if p.endswith('.png')])
         if not png_files: continue
 
-        conf_path = os.path.join(current_png_dir, "cursor.conf")
+        png_data = []
+        for p in png_files:
+            with open(p, 'rb') as f:
+                png_data.append(f.read())
+
         x_hot, y_hot = HOTSPOT_SPECIAL.get(folder_name.lower(), (1, 1))
 
-        with open(conf_path, 'w') as f:
-            for p in png_files:
-                f.write(f"{size} {x_hot} {y_hot} {os.path.join(current_png_dir, p)} 70\n")
-
         try:
-            master = os.path.join(current_png_dir, "master")
-            subprocess.run(['xcursorgen', str(conf_path), master], check=True)
-            
-            # Gunakan CURSOR_MAPPING untuk mendapatkan alias
-            aliases = CURSOR_MAPPING.get(key_type, [key_type])
+            cur = open_blob(png_data, hotspot=(x_hot, y_hot), delay=70)
+            xcursor_binary = to_x11(cur.frames)
+            aliases = CURSOR_MAPPING.get(folder_name.lower(), [folder_name.lower()])
             for alias in aliases:
-                dest_path = os.path.join(output_path, alias)
-                shutil.copy2(master, dest_path)
-            
-            rprint(f"[green] + [/] Alias created for {folder_name}: {', '.join(aliases)}")
+                dest = os.path.join(output_path, alias)
+                with open (dest, 'wb') as f:
+                    f.write(xcursor_binary)
 
-        except subprocess.CalledProcessError as e:
-            rprint(f"[white on red] FAIL [/] Error during XCursor generation for {folder_name}: {e}")
+        except Exception as e:
+            rprint(f"\n[white on red] FAIL [/] Error during XCursor generation for {folder_name}: {e}")
 
     if os.path.exists(png_dir):
         shutil.rmtree(png_dir)

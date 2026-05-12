@@ -39,7 +39,7 @@ def convert_cur_to_png():
 
         # Buat Folder Mirror
         os.makedirs(png_dir, exist_ok=True)
-        rprint(f'\n[black on cyan] * [/] Converting Folder: {folder_name}\n'); time.sleep(2)
+        rprint(f'\n[black on cyan] * [/] Converting: {folder_name}\n'); time.sleep(2)
         cur_files = sorted([f for f in os.listdir(cur_dir) if f.endswith('.cur')])
 
         for index, filename in enumerate(cur_files):
