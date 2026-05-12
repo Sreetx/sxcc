@@ -50,7 +50,7 @@ def banner():
     import subprocess
 
     console = Console()
-    vers = "2.4 #Beta"
+    vers = "2.5.1 #Beta"
 
     print("")
     console.clear()
