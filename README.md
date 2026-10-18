@@ -62,5 +62,11 @@ GNOME 51+ and Plasma 6.14+ start implementing SVG cursors as the default option,
             |   |--> frame_001.svg
             |   |--> metadata.json
             |--> hand (this is folder too)
+                |--> frame_001.svg 
+                |--> metadata.json
+                    (the same as the structure above)
+                    
+The frames file must be in SVG format, it cannot be PNG, JPEG or other image files other than SVG!
+
             
         
