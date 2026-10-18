@@ -63,6 +63,7 @@ The frames file must be in SVG format, it cannot be PNG, JPEG or other image fil
 The metadata structure should be like this:
 
 ### A. For static cursors
+** Note, Don't copy the code below, this is just an example! The code structure is valid and why can't you just copy and paste because the description containing the "<--" sign is included in the real .json file so the code will have an error!
 in metadata.json for a static cursor, just write the metadata like this:
 
         [
