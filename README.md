@@ -14,6 +14,7 @@ Let's bring your favorite waifu to the Linux world through cursors!
 * **Saweria:** https://saweria.co/linggachannel
 
 * **YouTube:** https://youtube.com/@linggachannel4781
+* **PayPal:** https://paypal.me/Sreetx
 
 # Installation
 
@@ -36,17 +37,6 @@ For non-Linux distro:
 Can run on Linux, Android (Termux), and Windows (Eksperimental)
 
 For automatic installation via other than pacman it is the EXPERIMENTAL period!
-
-# Deps
-
-Dependencies will be installed automatically when you run the tool. For operating systems that aren't automatically installed, please install them manually!
-
-1. Python
-2. Python-pillow
-3. Python-rich
-4. Python-prompt_toolkit
-5. Python-term-image
-6. Python-clickgen
 
 ## NEW INFO!
 GNOME 51+ and Plasma 6.14+ start implementing SVG cursors as the default option, the structure is something like this:
@@ -106,6 +96,20 @@ To create metadata.json for animated cursors, we only need to write the json cod
         xxx
         xx
     ]
+
+# Deps
+This tool uses quite a lot of libs to run smoothly. For manual installation, you only need to install a few basic libs so that the tool can run smoothly:
+
+1. python (arch linux) or python3 (debian/ubuntu/etc.)
+2. git
+3. xcursorgem
+4. pip or python-pip (arch linux)
+
+The remaining libs will be installed automatically via the SXCC tool, so there's no need to worry if there are deps problems.
+
+# Special Thanks
+Thank you for use this tools. I created this tool as a way around the problem of GNOME 51 only accepting SVG cursors and allowing Windows ANI cursors to run on SVG and XCUR Linux!
+Don't forget to subscribe in my Channel!
 
 
 
