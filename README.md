@@ -36,8 +36,6 @@ For non-Linux distro:
 
 Can run on Linux, Android (Termux), and Windows (Eksperimental)
 
-For automatic installation via other than pacman it is the EXPERIMENTAL period!
-
 ## NEW INFO!
 GNOME 51+ and Plasma 6.14+ start implementing SVG cursors as the default option, the structure is something like this:
 
