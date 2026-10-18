@@ -2,7 +2,7 @@
 Sreetx Cross Cursor Converter! Easy to USE!
 
 Use any type of cursor theme from anywhere!
-With this tool you can convert .ani (Windows) files to XCurosrs (Linux) which can be used in linux!
+A tool to convert Windows cursor files to run on Linux!
 Let's bring your favorite waifu to the Linux world through cursors!
 
 # Changelog
