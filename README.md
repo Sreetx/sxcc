@@ -70,7 +70,8 @@ in metadata.json for a static cursor, just write the metadata like this:
         "filename": "frame_001.svg",    <-- Pay attention to the name of the frame or image 
         "hotspot_x": 0,                 <-- Hotspot X is counted from the top left to the top left (horizontal)
         "hotspot_y": 0,                 <-- Hotspot Y is counted from top left to bottom left (vertical)
-        "nominal_size": 32              <-- This is for the cursor size, for some reason in my code it doesn't feel useful
+        "nominal_size": 32              <-- The SVG size is mandatory and must be the same as the nominal_size so that the cursor size can be set via supported cursor settings!
+        
     }
         ]
 
