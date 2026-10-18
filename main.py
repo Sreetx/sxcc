@@ -39,7 +39,6 @@ try:
         except ImportError:
             print(" (*) File Assets/warna.py is Missing")
             print(" (*) Please reinstall this script from my github repository!"); sys.exit()
-        
         # Cek Paket
         try:
             global Console
@@ -57,7 +56,6 @@ try:
             from rich.table import Table
             from rich.panel import Panel
             from rich.text import Text
-            from urllib.parse import urlparse
             from prompt_toolkit.history import FileHistory
             from prompt_toolkit.auto_suggest import AutoSuggestFromHistory
 
@@ -72,15 +70,14 @@ try:
             from term_image.image import AutoImage
             from rich.console import Console
 
-            global banner
-            from Assets.warna import banner
-
             from clickgen.parser import open_blob
             from clickgen.writer import to_x11
 
-        except ImportError:
+            import vtracer
+
+        except ImportError as e:
             stop_event.set()
-            rprint("\n * Required packages are missing!")
+            rprint(f"\n * Required packages are missing! {e}")
             chos = input(" ? Do you want to install the required packages now? (Y/n): ").strip()
             if chos.upper() == "Y":
                 if sys.platform in ["linux", "linux2"]:
@@ -89,83 +86,81 @@ try:
                     cmd_add = ""
                 rprint(" * Installing packages...")
                 try:
-                    subprocess.run([sys.executable, "-m", "pip", "install", "requests", "rich", "prompt_toolkit", "term-image", "clickgen", "pillow", cmd_add])
+                    subprocess.run([sys.executable, "-m", "pip", "install", "requests", "rich", "prompt_toolkit", "term-image", "clickgen", "pillow", "vtracer", cmd_add], check=True)
                 except subprocess.CalledProcessError:
-                    pass
-
-                if sys.platform in ['linux', 'linux2']:
-                    rprint(f' * Checking modules installed with package manager!')
-                    def get_package_manager():
-                    # Daftar manager yang didukung, urutan menentukan prioritas
-                        managers = {
-                            "pacman": "Arch/Manjaro/CachyOS",
-                            "yay" : "Arch",
-                            "paru" : "Arch",
-                            "apt": "Debian/Ubuntu/Mint",
-                            "dnf": "Fedora/RHEL",
-                            "zypper": "openSUSE"
-                            }
-                    
-                        for pm, distro in managers.items():
-                            if shutil.which(pm):
-                                return pm, distro
-                            
-                        return None, None
-                    
-                    pm_cmd, distro = get_package_manager()
-                    cmd_name = os.path.basename(pm_cmd) 
-                    if cmd_name in ['yay', 'paru']:
-                        rprint (f" * Found {cmd_name}")
-                        rprint (f' * Trying installing and update available packages!')
-                        try:
-                            subprocess.run([cmd_name, '-Syu', 'python-pillow', 'python-requests', 'python-term-image', 'python-prompt_toolkit', 'python-rich', 'python-clickgen', '--noconfirm'], check=True)
-                            print('\n # Installation Done! you can restart this tools!'), sys.exit()
-                        except Exception as e:
-                            print (f' ! {e}')
-                            exit()
-                    elif cmd_name == 'pacman':
-                        rprint (f" * Found {cmd_name}")
-                        rprint (f' * Trying installing and update available packages!')
-                        try:
-                            subprocess.run(['sudo', cmd_name, '-Syu', 'python-pillow', 'python-requests', 'python-term-image', 'python-prompt_toolkit', 'python-rich', '--noconfirm'], check=True)
-                            print('\n # Installation Done! you can restart this tools!'), sys.exit()
-                        except Exception as e:
-                            print (f' ! {e}')
-                            exit()
-                    elif cmd_name == 'apt':
-                        rprint (f" * Found {cmd_name}")
-                        rprint (f' * Trying installing and update available packages!')
-                        try:
-                            subprocess.run(['sudo', cmd_name, 'update'], check=True)
-                            subprocess.run(['sudo', cmd_name, 'upgrade'], check=True)
-                            subprocess.run(['sudo', cmd_name, 'install', 'python-requests', 'python-rich', 'python-term-image', 'python-prompt-toolkit'])
-                            print('\n # Installation Done! you can restart this tools!'), sys.exit()
-                        except Exception as e:
-                            print (f' {e}')
-                            exit()
-                    elif cmd_name == 'dnf':
-                        rprint (f" * Found {cmd_name}")
-                        rprint (f' * Trying installing and update available packages!')
-                        try:
-                            subprocess.run([cmd_name, 'install', 'python3-pillow', 'python3-requests', 'python3-rich', 'python3-prompt-toolkit'], check=True)
-                            print('\n # Installation Done! you can restart this tools!'), sys.exit()
-                        except Exception as e:
-                            print (f' {e}')
-                            exit()
-                    elif cmd_name == "zypper":
-                        rprint (f" * Found {cmd_name}")
-                        rprint (f' * Trying installing and update available packages!')
-                        try:
-                            subprocess.run(['sudo', cmd_name, 'install', 'python3-Pillow', 'python3-requests', 'python3-rich', 'python3-prompt_toolkit'], check=True)
-                            print('\n # Installation Done! you can restart this tools!'), sys.exit()
-                        except Exception as e:
-                            print (f' {e}')
-                            exit()
-                    else:
-                        rprint (f' * Package manager not found or not supported!')
-            
-                print(" # Installation Succesfully, restart this tools!"); exit()
+                    if sys.platform in ['linux', 'linux2']:
+                        rprint(f' * Checking modules installed with package manager!')
+                        def get_package_manager():
+                        # Daftar manager yang didukung, urutan menentukan prioritas
+                            managers = {
+                                "yay" : "Arch",
+                                "paru" : "Arch",
+                                "pacman": "Arch/Manjaro/CachyOS",
+                                "apt": "Debian/Ubuntu/Mint",
+                                "dnf": "Fedora/RHEL",
+                                "zypper": "openSUSE"
+                                }
+                        
+                            for pm, distro in managers.items():
+                                if shutil.which(pm):
+                                    return pm, distro
+                                
+                            return None, None
+                        
+                        pm_cmd, distro = get_package_manager()
+                        cmd_name = os.path.basename(pm_cmd) 
+                        if cmd_name in ['yay', 'paru']:
+                            rprint (f" * Found {cmd_name}")
+                            rprint (f' * Trying installing and update available packages!')
+                            try:
+                                subprocess.run([cmd_name, '-Syu', 'python-pillow', 'python-requests', 'python-term-image', 'python-prompt_toolkit', 'python-rich', 'python-clickgen', 'python-vtracer', '--noconfirm'], check=True)
+                                print('\n # Installation Done! you can restart this tools!'), sys.exit()
+                            except Exception as e:
+                                print (f' ! {e}')
+                                exit()
+                        elif cmd_name == 'pacman':
+                            rprint (f" * Found {cmd_name}")
+                            rprint (f' * Trying installing and update available packages!')
+                            try:
+                                subprocess.run(['sudo', cmd_name, '-Syu', 'python-pillow', 'python-requests', 'python-term-image', 'python-prompt_toolkit', 'python-rich', '--noconfirm'], check=True)
+                                print('\n # Installation Done! you can restart this tools!'), sys.exit()
+                            except Exception as e:
+                                print (f' ! {e}')
+                                exit()
+                        elif cmd_name == 'apt':
+                            rprint (f" * Found {cmd_name}")
+                            rprint (f' * Trying installing and update available packages!')
+                            try:
+                                subprocess.run(['sudo', cmd_name, 'update'], check=True)
+                                subprocess.run(['sudo', cmd_name, 'upgrade'], check=True)
+                                subprocess.run(['sudo', cmd_name, 'install', 'python-requests', 'python-rich', 'python-term-image', 'python-prompt-toolkit'])
+                                print('\n # Installation Done! you can restart this tools!'), sys.exit()
+                            except Exception as e:
+                                print (f' {e}')
+                                exit()
+                        elif cmd_name == 'dnf':
+                            rprint (f" * Found {cmd_name}")
+                            rprint (f' * Trying installing and update available packages!')
+                            try:
+                                subprocess.run([cmd_name, 'install', 'python3-pillow', 'python3-requests', 'python3-rich', 'python3-prompt-toolkit'], check=True)
+                                print('\n # Installation Done! you can restart this tools!'), sys.exit()
+                            except Exception as e:
+                                print (f' {e}')
+                                exit()
+                        elif cmd_name == "zypper":
+                            rprint (f" * Found {cmd_name}")
+                            rprint (f' * Trying installing and update available packages!')
+                            try:
+                                subprocess.run(['sudo', cmd_name, 'install', 'python3-Pillow', 'python3-requests', 'python3-rich', 'python3-prompt_toolkit'], check=True)
+                                print('\n # Installation Done! you can restart this tools!'), sys.exit()
+                            except Exception as e:
+                                print (f' {e}')
+                                exit()
+                        else:
+                            rprint (f' * Package manager not found or not supported!')
                 
+                    print(" # Installation Succesfully, restart this tools!"); exit()
+                 
 except Exception as e:
     stop_event.set()
     rprint(f"\n[bold red]![/bold red] An error occurred during import: {e}")
@@ -192,14 +187,6 @@ def run_with_animation(func, teks):
         loading_thread.join()
     stop_event.set()
     loading_thread.join()
-
-try:
-    run_with_animation(import_module, "[*] Importing Module")
-except (KeyboardInterrupt, OSError):
-    rprint("\n ! Exiting...")
-    exit()
-
-stop_event.set()
 
 # Fungsi Rekursif
 def recursive_input(mentah, extension=None):
@@ -229,18 +216,19 @@ def recursive_input(mentah, extension=None):
     
     return [f.resolve() for f in found_files]
 
+    # Intinya diatas tadi yang paling pusing
+
 # Main tools
-banner()
 def main():
     console = Console()
     try:
         lists = Table(show_header=False, show_edge=False, pad_edge=False, box=None)
     
         rprint("\n[orange1] > [/orange1]Select an options.\n")
-        lists.add_row("[bold green] 1 [/bold green]", "Convert", ".ani", "to", "XCur")
-        lists.add_row("[bold green] 2 [/bold green]", "Convert", "XCur", "to", ".ani")
-        lists.add_row("[bold green] 3 [/bold green]", "Convert", ".GIF", "to", ".ani")
-        lists.add_row("[bold green] 4 [/bold green]", "Convert", ".GIF", "to", "XCur\n")
+        lists.add_row("[bold green] 1 [/bold green]", "Convert", "ani", "to", "XCur")
+        lists.add_row("[bold green] 2 [/bold green]", "Convert", "ani", "to", "SVG")
+        lists.add_row("[bold green] 3 [/bold green]", "Convert", "GIF", "to", "ani")
+        lists.add_row("[bold green] 4 [/bold green]", "Convert", "GIF", "to", "XCur\n")
         console.print(lists)
 
     # Cache history
@@ -264,15 +252,15 @@ def main():
                 for path in file_list:
                     f.write(str(path) + '\n')
 
-            rprint("\n [black on orange1] # [/black on orange1] Extracting frames from .ani file..."); time.sleep (2)
-            from Assets.Engine.extractor_ani import ekstrak
-            ekstrak()
+            rprint("\n [black on orange1]#[/] Extracting frames from .ani to .cur file(s)..."); time.sleep (2)
+            from Assets.Engine.extractor import ekstrak_ani
+            ekstrak_ani()
 
-            rprint("\n [black on orange1] # [/black on orange1] Converting .cur frames to .png..."); time.sleep(2)
-            from Assets.Engine.converter import convert_cur_to_png
-            convert_cur_to_png()
+            rprint("\n [black on orange1]#[/] Converting .cur frames to .png..."); time.sleep(2)
+            from Assets.Engine.converter import convert_ani_to_png
+            convert_ani_to_png()
 
-            rprint("\n [black on orange1] # [/black on orange1] Building XCursor files..."); time.sleep(2)
+            rprint("\n [black on orange1]#[/] Building XCursor files..."); time.sleep(2)
             from Assets.Engine.compiler import compiler_xcur
             compiler_xcur()
             
@@ -280,7 +268,35 @@ def main():
                 shutil.rmtree(os.path.join(tmp_dir, "sxcc", "extracted_frames"))
 
         elif choice == "2":
-            rprint("\n [*] This feature is currently under development. Please check back later!")
+            file_list = recursive_input(mentah, extension=".ani")
+            with open (sxcc_link, 'w', encoding='UTF-8') as f:
+                for path in file_list:
+                    f.write(str(path) + '\n')
+
+            rprint("\n [black on orange1]#[/] Extracting frames from ANI to CUR file(s)..."); time.sleep(2)
+            from Assets.Engine.extractor import ekstrak_ani
+            ekstrak_ani()
+
+            rprint("\n [black on orange1]#[/] Converting frames from CUR to PNG file(s)..."); time.sleep(2)
+            from Assets.Engine.converter import convert_ani_to_png
+            convert_ani_to_png()
+
+            rprint("\n [black on orange1]#[/] Upscaling PNG files for SVG..."); time.sleep(2)
+            from Assets.Engine.converter import upscale_the_pngs
+            upscale_the_pngs()
+
+            rprint("\n [black on orange1]#[/] Converting frames from PNG to SVG file(s)..."); time.sleep(2)
+            from Assets.Engine.converter import convert_png_to_svg
+            convert_png_to_svg()
+
+            rprint("\n [black on orange1]#[/] Building SVG cursors..."); time.sleep(2)
+            from Assets.Engine.compiler import svg_cursor_creator
+            svg_cursor_creator()
+
+            rprint("\n [green]~[/] Removing cache files!")
+            if os.path.exists(os.path.join(tmp_dir, "sxcc", "extracted_frames")):
+                shutil.rmtree(os.path.join(tmp_dir, "sxcc", "extracted_frames"))
+                    
         elif choice == "3":
             rprint("\n [*] This feature is currently under development. Please check back later!")
         elif choice == "4":
@@ -299,4 +315,11 @@ def main():
 
 
 if __name__ == "__main__":
+    try:
+        run_with_animation(import_module, "[*] Importing Module")
+    except (KeyboardInterrupt, OSError):
+        rprint("\n ! Exiting...")
+
+    stop_event.set()
+    banner()
     main()
