@@ -17,40 +17,17 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-import os, sys, time
-if sys.platform in ["linux", "linux2", "win32", "win64"]:
-    orange = "\033[93m"
-    putih = "\033[39m"
-    merah = "\033[91m"
-    hijau = "\033[92m"
-    biru = "\033[94m"
-    borange = "\033[1;93m"
-    bputih = "\033[1;39m"
-    bmerah = "\033[1;91m"
-    bhijau = "\033[1;92m"
-    bbiru = "\033[1;94m"
-    banhijau = "\033[7;92m"
-    kelabu = "\033[90m"
-    borangekelip = "\033[5;93m"
-    banmerah = "\033[7;91m"
-    banorange = "\033[7;93m"
-    reset = "\033[0m"
-else:
-    pass
-
 def banner():
     from rich.console import Console
     from rich.table import Table
     from rich.panel import Panel
     from rich.text import Text
-    from PIL import Image
-    from io import BytesIO
 
     import requests
     import subprocess
 
     console = Console()
-    vers = "2.5.1 #Beta"
+    vers = "0.31"
 
     print("")
     console.clear()
