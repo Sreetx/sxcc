@@ -102,7 +102,7 @@ This tool uses quite a lot of libs to run smoothly. For manual installation, you
 
 1. python (arch linux) or python3 (debian/ubuntu/etc.)
 2. git
-3. xcursorgem
+3. xcursorgen
 4. pip or python-pip (arch linux)
 
 The remaining libs will be installed automatically via the SXCC tool, so there's no need to worry if there are deps problems.
