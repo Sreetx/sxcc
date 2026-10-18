@@ -5,6 +5,15 @@ Use any type of cursor theme from anywhere!
 A tool to convert Windows cursor files to run on Linux!
 Let's bring your favorite waifu to the Linux world through cursors!
 
+## Ability
+Here are the features of the tool I made:
+
+1. Can convert cursor files recursively or single with complete structures already prepared.
+2. Can convert ANI (Windows animated cursor) to XCUR (X11 Linux Cursor).
+3. Can convert ANI (Windows animated cursors) to SVG cursors.
+4. Easy to use! in just 3 command lines!
+5. Animated or Static cursors are fully SUPPORTED!
+
 # Changelog
 
     Rewrite SXCC from zero, Verison 0.31
