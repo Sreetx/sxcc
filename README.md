@@ -9,7 +9,7 @@ Let's bring your favorite waifu to the Linux world through cursors!
 Here are the features of the tool I made:
 
 1. Can convert cursor files recursively or single with complete structures already prepared.
-2. Can convert ANI (Windows animated cursor) to XCUR (X11 Linux Cursor).
+2. Can convert ANI (Windows animated cursors) to XCUR (X11 Linux Cursor).
 3. Can convert ANI (Windows animated cursors) to SVG cursors.
 4. Easy to use! in just 3 command lines!
 5. Animated or Static cursors are fully SUPPORTED!
