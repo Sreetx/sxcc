@@ -7,12 +7,7 @@ Let's bring your favorite waifu to the Linux world through cursors!
 
 # Changelog
 
-    1.0 #Beta - Legacy version
-    1.3 #Beta - Fixing Bug
-    2.4 #Beta - Added recursive conversion support to the tool
-                fixing bug automatic installation
-    2.5.1 #Beta - Fixing bug and replace cursor build method to clickgen (before Xcursorgen)
-                - Make SXCC better cross platform with clickgen 
+    Rewrite SXCC from zero, Verison 0.31
 
 # Support the Project!
 
@@ -52,3 +47,20 @@ Dependencies will be installed automatically when you run the tool. For operatin
 4. Python-prompt_toolkit
 5. Python-term-image
 6. Python-clickgen
+
+## NEW INFO!
+GNOME 51+ and Plasma 6.14+ start implementing SVG cursors as the default option, the structure is something like this:
+
+        Skirk Cursors (examples)
+        |
+        |--> Index.theme
+        |--> Cursors
+        |   |--> normal
+        |   |--> default, xxx (for X11 / Xcur Cursors)
+        |--> cursors_scalable
+            |--> normal (this all is folder)
+            |   |--> frame_001.svg
+            |   |--> metadata.json
+            |--> hand (this is folder too)
+            
+        
