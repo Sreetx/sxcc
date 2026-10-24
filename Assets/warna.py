@@ -23,11 +23,8 @@ def banner():
     from rich.panel import Panel
     from rich.text import Text
 
-    import requests
-    import subprocess
-
     console = Console()
-    vers = "0.31"
+    vers = "0.32"
 
     print("")
     console.clear()
