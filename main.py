@@ -18,17 +18,15 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 # Import modul dasar
-import os, sys, time, threading, glob, subprocess, shutil, builtins, tempfile
+import os, sys, time, threading, subprocess, shutil, builtins, tempfile
 from pathlib import Path
 stop_event = threading.Event()
 rprint = builtins.print
 
 #Temp Super
 tmp_dir = tempfile.gettempdir()
-if not os.path.exists(os.path.join(tmp_dir, "sxcc")):
-    os.makedirs(os.path.join(tmp_dir, "sxcc"), exist_ok=True)
-
-tmp_dir = tempfile.gettempdir()
+root_tmp = os.path.join(tmp_dir, "sxcc")
+os.makedirs(root_tmp, exist_ok=True)
 
 # Cek Dependensi
 try:
@@ -225,25 +223,24 @@ def main():
         lists = Table(show_header=False, show_edge=False, pad_edge=False, box=None)
     
         rprint("\n[orange1] > [/orange1]Select an options.\n")
-        lists.add_row("[bold green] 1 [/bold green]", "Convert", "ani", "to", "XCur")
-        lists.add_row("[bold green] 2 [/bold green]", "Convert", "ani", "to", "SVG")
+        lists.add_row("[bold green] 1 [/bold green]", "Convert", "Windows Cursors", "to", "Linux Cursors")
+        lists.add_row("[bold green] 2 [/bold green]", "Convert", "Windows Cursors", "to", "Linux Cursors (SVG Depth Style)")
         lists.add_row("[bold green] 3 [/bold green]", "Convert", "GIF", "to", "ani")
         lists.add_row("[bold green] 4 [/bold green]", "Convert", "GIF", "to", "XCur\n")
         console.print(lists)
 
     # Cache history
-        history_file = FileHistory(os.path.join(tmp_dir, "sxcc", ".sxcc_history"))
-        history_name = FileHistory(os.path.join(tmp_dir, "sxcc", ".sxcc_history_name"))
+        history_file = FileHistory(os.path.join(root_tmp, ".sxcc_history"))
+        history_name = FileHistory(os.path.join(root_tmp, ".sxcc_history_name"))
 
         choice = prompt(HTML("<style fg='#fdb9c0'> ? </style>Please enter your choice: ")).strip()
         mentah = prompt(HTML("<style fg='#fdb9c0'> > </style>Please enter the path to your input file or folder (Can use '~' for home directory): "), history=history_file, auto_suggest=AutoSuggestFromHistory()).strip()
         cursors_name = prompt(HTML("<style fg='#fdb9c0'> > </style>Name of Cursors: "), history=history_name, auto_suggest=AutoSuggestFromHistory()).strip()
         mentah = os.path.expanduser(mentah)
-        sxcc_link = os.path.join(tmp_dir, "sxcc", "sxcc.link")
+        sxcc_link = os.path.join(root_tmp, "sxcc.link")
 
-        path_jembatan = os.path.join(tmp_dir, "sxcc")
 
-        with open (os.path.join(str(path_jembatan), "sxcc_history_name"), 'w', encoding='UTF-8') as f:
+        with open (os.path.join(root_tmp, "sxcc_history_name"), 'w', encoding='UTF-8') as f:
             f.write(cursors_name)
 
         if choice == "1":
@@ -252,7 +249,8 @@ def main():
                 for path in file_list:
                     f.write(str(path) + '\n')
 
-            rprint("\n [black on orange1]#[/] Extracting frames from .ani to .cur file(s)..."); time.sleep (2)
+            rprint("\n [black on green]1[/] Converting Windows Cursor to Linux Cursors!")
+            rprint(" [black on orange1]#[/] Extracting frames from .ani to .cur file(s)..."); time.sleep (2)
             from Assets.Engine.extractor import ekstrak_ani
             ekstrak_ani()
 
@@ -263,25 +261,9 @@ def main():
             rprint("\n [black on orange1]#[/] Building XCursor files..."); time.sleep(2)
             from Assets.Engine.compiler import compiler_xcur
             compiler_xcur()
-            
-            if os.path.exists(os.path.join(tmp_dir, "sxcc", "extracted_frames")):
-                shutil.rmtree(os.path.join(tmp_dir, "sxcc", "extracted_frames"))
 
-        elif choice == "2":
-            file_list = recursive_input(mentah, extension=".ani")
-            with open (sxcc_link, 'w', encoding='UTF-8') as f:
-                for path in file_list:
-                    f.write(str(path) + '\n')
-
-            rprint("\n [black on orange1]#[/] Extracting frames from ANI to CUR file(s)..."); time.sleep(2)
-            from Assets.Engine.extractor import ekstrak_ani
-            ekstrak_ani()
-
-            rprint("\n [black on orange1]#[/] Converting frames from CUR to PNG file(s)..."); time.sleep(2)
-            from Assets.Engine.converter import convert_ani_to_png
-            convert_ani_to_png()
-
-            rprint("\n [black on orange1]#[/] Upscaling PNG files for SVG..."); time.sleep(2)
+            rprint("\n [black on orange1]#[/] Creating SVG Cursors!"); time.sleep(2)
+            rprint(" [black on orange1]#[/] Upscaling PNG files for SVG...")
             from Assets.Engine.converter import upscale_the_pngs
             upscale_the_pngs()
 
@@ -294,9 +276,49 @@ def main():
             svg_cursor_creator()
 
             rprint("\n [green]~[/] Removing cache files!")
-            if os.path.exists(os.path.join(tmp_dir, "sxcc", "extracted_frames")):
-                shutil.rmtree(os.path.join(tmp_dir, "sxcc", "extracted_frames"))
-                    
+            if os.path.exists(os.path.join(root_tmp, "extracted_frames")):
+                shutil.rmtree(os.path.join(root_tmp, "extracted_frames"))
+ 
+        elif choice == "2":
+            # Depth style
+            file_list = recursive_input(mentah, extension=".ani")
+            with open (sxcc_link, 'w', encoding='UTF-8') as f:
+                for path in file_list:
+                    f.write(str(path) + '\n')
+
+            # Depth style switch
+            depth_in = "A"
+            with open (os.path.join(root_tmp, "depth_style"), "w", encoding="utf-8") as file:
+                file.write(depth_in)
+
+            rprint("\n [black on green]2[/] Converting Windows Cursor to Linux Cursors with depth syle!")
+            rprint(" [black on orange1]#[/] Extracting frames from .ani to .cur file(s)..."); time.sleep (2)
+            from Assets.Engine.extractor import ekstrak_ani
+            ekstrak_ani()
+
+            rprint("\n [black on orange1]#[/] Converting .cur frames to .png..."); time.sleep(2)
+            from Assets.Engine.converter import convert_ani_to_png
+            convert_ani_to_png()
+
+            rprint("\n [black on orange1]#[/] Building XCursor files..."); time.sleep(2)
+            from Assets.Engine.compiler import compiler_xcur
+            compiler_xcur()
+
+            rprint("\n [black on orange1]#[/] Converting frames from PNG to SVG file(s)..."); time.sleep(2)
+            from Assets.Engine.converter import convert_png_to_svg
+            convert_png_to_svg()
+
+            rprint("\n [black on orange1]#[/] Building SVG cursors..."); time.sleep(2)
+            from Assets.Engine.compiler import svg_cursor_creator
+            svg_cursor_creator()
+
+            rprint("\n [green]~[/] Removing cache files!")
+            
+            if os.path.exists(os.path.join(root_tmp, "extracted_frames")):
+                shutil.rmtree(os.path.join(root_tmp, "extracted_frames"))
+            if os.path.exists(os.path.join(root_tmp, "depth_style")):
+                os.remove(os.path.join(root_tmp, "depth_style"))
+
         elif choice == "3":
             rprint("\n [*] This feature is currently under development. Please check back later!")
         elif choice == "4":
@@ -305,13 +327,18 @@ def main():
             rprint("\n [*] Thank you for using Sreetx Cross Cursor! Goodbye!")
             exit()
     except (KeyboardInterrupt, EOFError):
-        if os.path.exists(os.path.join(tmp_dir, "sxcc", "extracted_frames")):
-            shutil.rmtree(os.path.join(tmp_dir, "sxcc", "extracted_frames"))
+        if os.path.exists(os.path.join(root_tmp, "extracted_frames")):
+            shutil.rmtree(os.path.join(root_tmp, "extracted_frames"))
+        if os.path.exists(os.path.join(root_tmp, "depth_style")):
+            os.remove(os.path.join(root_tmp, "depth_style"))
+
         rprint("\n [*] Exiting..."); sys.exit()
-    except Exception as e:
-        if os.path.exists(os.path.join(tmp_dir, "sxcc", "extracted_frames")):
-            shutil.rmtree(os.path.join(tmp_dir, "sxcc", "extracted_frames"))
-        rprint(f' [black on red]![/] {e}'); sys.exit()
+    #except Exception as e:
+    #    if os.path.exists(os.path.join(root_tmp, "extracted_frames")):
+    #        shutil.rmtree(os.path.join(root_tmp, "extracted_frames"))
+    #    if os.path.exists(os.path.join(root_tmp, "depth_style")):
+    #        os.remove(os.path.join(root_tmp, "depth_style"))
+    #    rprint(f' [black on red]![/] {e}'); sys.exit()
 
 
 if __name__ == "__main__":
@@ -322,4 +349,6 @@ if __name__ == "__main__":
 
     stop_event.set()
     banner()
+    if os.path.exists(os.path.join(root_tmp, "depth_style")):
+        os.remove(os.path.join(root_tmp, "depth_style"))
     main()
