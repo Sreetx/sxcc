@@ -17,6 +17,9 @@ Here are the features of the tool I made:
 # Changelog
 
     Rewrite SXCC from zero, Verison 0.31
+    Version 0.32
+        Speeding up conversion and unifying the process of creating xcur and SVG cursors
+        Adding polygon / depth style
 
 # Support the Project!
 
