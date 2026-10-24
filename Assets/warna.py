@@ -24,7 +24,7 @@ def banner():
     from rich.text import Text
 
     console = Console()
-    vers = "0.32"
+    vers = "0.33"
 
     print("")
     console.clear()
