@@ -95,8 +95,14 @@ def convert_ani_to_png():
 
         os.makedirs(png_dir, exist_ok=True)
 
+        Image.init()
+
+        # Buat ngecek file gambar yang bener. kalo nggak ya udah
+        EKSTENSI = tuple(Image.registered_extensions().keys())
+
+        # Kita eksekusi disini, dibawah kita pake EKSTENSI sebagai patokan untuk nyari file gambar yang punya akhiran .cur, .png, atau sebagainya.
         rprint(f'\n[black on cyan] * [/] Converting: {folder_name}\n'); time.sleep(0.7)
-        cur_files = sorted([f for f in os.listdir(cur_dir) if f.endswith('.cur')])
+        cur_files = sorted([f for f in os.listdir(cur_dir) if f.endswith(EKSTENSI)])
 
         for index, filename in enumerate(cur_files):
             cur_path = os.path.join(cur_dir, filename)
