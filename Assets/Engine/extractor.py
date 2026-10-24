@@ -17,13 +17,8 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-import os, sys, time, threading, glob, subprocess, shutil, builtins, tempfile
-from pathlib import Path
+import os, time, tempfile
 from rich.console import Console
-from rich.prompt import Prompt
-from rich.panel import Panel
-from rich.text import Text
-from rich.progress import Progress, SpinnerColumn, TextColumn, BarColumn, TaskProgressColumn
 from rich import print as rprint
 import os
 import struct
@@ -49,7 +44,7 @@ def ekstrak_ani():
         list_ani = [line.strip() for line in f if line.strip()]
 
     for ani_path in list_ani:
-        rprint(f"\n[black on cyan] * [/] Extracting: {os.path.basename(ani_path)}\n"); time.sleep(1)
+        rprint(f"\n[black on cyan] * [/] Extracting: {os.path.basename(ani_path)}\n"); time.sleep(0.7)
         if not os.path.exists(ani_path):
             rprint(f"[red] ! [/]File .ani Not found in: {ani_path}"); time.sleep(0.3)
             continue
@@ -89,7 +84,7 @@ def ekstrak_ani():
             with open(output_path, 'wb') as cur_file:
                 cur_file.write(final_data)
             
-            rprint(f" [black on green]*[/] Extracting {name_frame}[dim] → [/]{name_frame}_{frame_count:03d}"); time.sleep(0.1)
+            rprint(f" [black on green]*[/] Extracting {name_frame}[dim] → [/]{name_frame}_{frame_count:03d}"); time.sleep(0.05)
             pos = start_data + chunk_size
         
     return frame_count 

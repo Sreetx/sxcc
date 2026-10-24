@@ -19,12 +19,8 @@
 
 # Import modul dasar
 
-import os, sys, time, threading, glob, shutil, builtins, tempfile, struct, json
+import os, sys, time, shutil, tempfile, json
 from pathlib import Path
-from rich.console import Console
-from rich.prompt import Prompt
-from rich.panel import Panel
-from rich.text import Text
 from rich import print as rprint
 
 # Modul Clickgen dari AUR dan PyPi versi waras. Jangan kau install yang legacy!
@@ -33,16 +29,14 @@ from clickgen.writer import to_x11
 
 # Set the tmp dir
 tmp_file = tempfile.gettempdir()
-if not os.path.exists(os.path.join(tmp_file, "sxcc", "extracted_frames", "png")):
-    os.makedirs(os.path.join(tmp_file, "sxcc", "extracted_frames", "png"), exist_ok=True)
-if not os.path.exists(os.path.join(tmp_file, "sxcc", "extracted_frames", "cur")):
-    os.makedirs(os.path.join(tmp_file, "sxcc", "extracted_frames", "cur"), exist_ok=True)
+root_temp = os.path.join(tmp_file, "sxcc")
+frames_cache_dir = os.path.join(root_temp, "extracted_frames")
 
-png_dir = os.path.join(tmp_file, "sxcc", "extracted_frames", "png")
-name_dir = os.path.join(tmp_file, "sxcc", "sxcc_history_name")
-cur_dir = os.path.join(tmp_file, "sxcc", "extracted_frames", "cur")
-name_file = os.path.join(tmp_file, "sxcc", "sxcc.link")
-svg_dir = os.path.join(tmp_file, "sxcc", "extracted_frames", "svg")
+png_dir = os.path.join(frames_cache_dir, "png")
+name_dir = os.path.join(root_temp, "sxcc_history_name")
+cur_dir = os.path.join(frames_cache_dir, "cur")
+name_file = os.path.join(root_temp, "sxcc.link")
+svg_dir = os.path.join(frames_cache_dir, "svg")
 
 # Penamaan tema kursor
 with open(name_dir, 'r', encoding='UTF-8') as f:
@@ -114,6 +108,7 @@ Comment=Custom Cursor Theme created by SXCC (Sreetx Cross Cursors Converter)!
 """
 
 def compiler_xcur():
+    print("")
     # Creating Index.theme
     with open(os.path.join(final_output, "index.theme"), 'w') as f:
         f.write(INDEX_THEME)
@@ -123,7 +118,6 @@ def compiler_xcur():
     for folder_name in os.listdir(png_dir):
         current_png_dir = os.path.join(png_dir, folder_name)
         if not os.path.isdir(current_png_dir): continue
-        rprint('')
         rprint (f' [black on cyan]*[/] Building {folder_name} (Clickgen)'); time.sleep(1)
         
         png_files = sorted([os.path.join(current_png_dir, p) for p in os.listdir(current_png_dir) if p.endswith('.png')])
@@ -137,7 +131,7 @@ def compiler_xcur():
         x_hot, y_hot = HOTSPOT_SPECIAL.get(folder_name.lower(), (1, 1))
 
         try:
-            cur = open_blob(png_data, hotspot=(x_hot, y_hot), delay=70)
+            cur = open_blob(png_data, hotspot=(x_hot, y_hot), delay=delay)
             xcursor_binary = to_x11(cur.frames)
             aliases = CURSOR_MAPPING.get(folder_name.lower(), [folder_name.lower()])
             for alias in aliases:
@@ -147,15 +141,6 @@ def compiler_xcur():
 
         except Exception as e:
             rprint(f"\n[white on red] FAIL [/] Error during XCursor generation for {folder_name}: {e}")
-
-    if os.path.exists(png_dir):
-        shutil.rmtree(png_dir)
-    if os.path.exists(cur_dir):
-        shutil.rmtree(cur_dir)
-
-    rprint(f"\n[bold cyan]![/] XCursor created with [yellow]Xcursorgen[/]: {final_output}")
-    rprint(f"[bold cyan]![/] You can copy the folder to /usr/share/icons so that the cursor can be used.")
-
 
 # Creating SVG in this moment
 def svg_cursor_creator ():
@@ -192,7 +177,7 @@ def svg_cursor_creator ():
                 shutil.copy(src_file, dst_name)
                 copied_frames.append(file_names)
 
-                rprint (f" [black on cyan]>[/] Copying {file_names_print} → {category_name}"); time.sleep(0.07)
+                rprint (f" [black on cyan]>[/] Copying {file_names_print} → {category_name}"); time.sleep(0.05)
 
         # Untuk kordinat kursor
         hx, xy = HOTSPOT_SPECIAL.get(category_name, (hotspot_x, hotspot_y))
@@ -252,6 +237,8 @@ def svg_cursor_creator ():
         shutil.rmtree(cur_dir)
     
     # Ending
-    rprint(f"\n[black on green]✔[/] XCursor created with [yellow]Xcursorgen[/]: {final_output}")
-    rprint(f"[black on green]✔[/] You can copy the folder to /usr/share/icons so that the cursor can be used.")
+    rprint(f"[black on green]✔[/] XCursors saved on [bold white]{output_path}")
+    rprint(f"[black on green]✔[/] SVG Cursors saved on [bold white]{cursor_scalable_output}[/]")
+    rprint(f"[black on green]✔[/] Cursors saved on [bold white]{final_output}[/]")
+    rprint(f"[black on green]✔[/] You can copy [bold white]'{Path(final_output).name}'[/] to [bold orange1]/usr/share/icons/[/]")
                 

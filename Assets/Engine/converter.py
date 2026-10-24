@@ -17,28 +17,74 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-import os, sys, time, threading, glob, subprocess, shutil, builtins, tempfile, vtracer, re
+import os, time, tempfile, vtracer, re
 from pathlib import Path
 from PIL import Image
 import os
 from rich import print as rprint
+from collections import deque
 
+# Cache Directory
 tmp_dir = tempfile.gettempdir()
+root_tmp = os.path.join(tmp_dir, "sxcc")
+frames_cache_dir = os.path.join(root_tmp, "extracted_frames")
+os.makedirs(frames_cache_dir, exist_ok=True)
 
-root_png = os.path.join(tmp_dir, "sxcc", "extracted_frames", "png")
+root_png = os.path.join(frames_cache_dir, "png")
 os.makedirs(root_png, exist_ok=True)
 
-root_cur = os.path.join(tmp_dir, "sxcc", "extracted_frames", "cur")
+root_cur = os.path.join(frames_cache_dir, "cur")
 os.makedirs(root_cur, exist_ok=True)
-
-root_upscale = os.path.join(tmp_dir, "sxcc", "extracted_frames", "upscale")
-os.makedirs(root_upscale, exist_ok=True)
                             
-root_svg = os.path.join(tmp_dir, "sxcc", "extracted_frames", "svg")
+root_svg = os.path.join(frames_cache_dir, "svg")
 os.makedirs(root_svg, exist_ok=True)
+
+depth_style = os.path.exists(os.path.join(root_tmp, "depth_style"))
+if depth_style:
+    basic_or_upscale = os.path.join(frames_cache_dir, "png")
+else:
+    basic_or_upscale = os.path.join(frames_cache_dir, "upscale")
 
 SCALE = 8
 PAD = 2
+
+# Cores utama untuk hapus background gambar
+def remove_edge_background(img, threshold=2):
+    """Hapus background hitam yang tersambung ke tepi gambar saja."""
+    img = img.convert("RGBA")
+    w, h = img.size
+    px = img.load()
+
+    def is_bg(x, y):
+        r, g, b, a = px[x, y]
+        return a == 0 or (r < threshold and g < threshold and b < threshold)
+
+    visited = [[False] * h for _ in range(w)]
+    queue = deque()
+
+    # Titik awal: semua pixel di keempat sisi gambar
+    for x in range(w):
+        for y in (0, h - 1):
+            if is_bg(x, y) and not visited[x][y]:
+                visited[x][y] = True
+                queue.append((x, y))
+    for y in range(h):
+        for x in (0, w - 1):
+            if is_bg(x, y) and not visited[x][y]:
+                visited[x][y] = True
+                queue.append((x, y))
+
+    # Flood fill (4 arah) -> hanya menyebar lewat pixel background
+    while queue:
+        x, y = queue.popleft()
+        px[x, y] = (0, 0, 0, 0)
+        for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+            nx, ny = x + dx, y + dy
+            if 0 <= nx < w and 0 <= ny < h and not visited[nx][ny] and is_bg(nx, ny):
+                visited[nx][ny] = True
+                queue.append((nx, ny))
+
+    return img
 
 def convert_ani_to_png():
     for folder_name in os.listdir(root_cur):
@@ -49,7 +95,7 @@ def convert_ani_to_png():
 
         os.makedirs(png_dir, exist_ok=True)
 
-        rprint(f'\n[black on cyan] * [/] Converting: {folder_name}\n'); time.sleep(1.5)
+        rprint(f'\n[black on cyan] * [/] Converting: {folder_name}\n'); time.sleep(0.7)
         cur_files = sorted([f for f in os.listdir(cur_dir) if f.endswith('.cur')])
 
         for index, filename in enumerate(cur_files):
@@ -58,17 +104,14 @@ def convert_ani_to_png():
 
             try:
                 with Image.open(cur_path) as img:
-                    rgba_img = img.convert("RGBA")
-                    datas = rgba_img.getdata()
-                    new_data = [(0, 0, 0, 0) if (item[0] < 2 and item[1] < 2 and item[2] < 2) else item for item in datas]
-                    rgba_img.putdata(new_data)
+                    rgba_img = remove_edge_background(img, threshold=2)
                     rgba_img.save(png_path, "PNG")
 
-                    rprint(f' [black on green]*[/] Converting {filename} [dim]→[/] frame_{index+1:03d}.png'); time.sleep(0.07)
+                    rprint(f' [black on green]*[/] Converting {filename} [dim]→[/] frame_{index+1:03d}.png'); time.sleep(0.05)
             except Exception as e:
                 rprint(f"[black on red] FAIL [/] {filename}: {e}")
 
-    rprint(f'\n[black on green] ✔ [/] All frames saved in {root_png}')
+    rprint(f'\n[black on green] ✔ [/] All frames saved in [bold white]{root_png}[/]')
 
 def upscale_the_pngs(scale=SCALE, pad=PAD, pixel_art=True):
     rprint ("\n[black on cyan] ~ [/] Upscaling frames...")
@@ -76,7 +119,7 @@ def upscale_the_pngs(scale=SCALE, pad=PAD, pixel_art=True):
 
     for folder_name in os.listdir(root_png):
         png_dir = os.path.join(root_png, folder_name)
-        upscale_dir = os.path.join(root_upscale, folder_name)
+        upscale_dir = os.path.join(basic_or_upscale, folder_name)
 
         if not os.path.isdir(png_dir): continue
         os.makedirs(upscale_dir, exist_ok=True)
@@ -97,7 +140,7 @@ def upscale_the_pngs(scale=SCALE, pad=PAD, pixel_art=True):
             except Exception as e:
                 rprint(f"[bold red] ! [/]Error: {e}")
 
-    rprint(" [black on green]*[/] Done!"); time.sleep(1)
+    rprint(" [black on green]*[/] Done!"); time.sleep(0.7)
 
 def fix_svg_size(svg_path, scale=SCALE, pad=PAD):
     text = Path(svg_path).read_text()
@@ -123,7 +166,7 @@ def fix_svg_size(svg_path, scale=SCALE, pad=PAD):
 def convert_png_to_svg():
     rprint ("\n[black on cyan] > [/] Converting frames to SVG...")
     for folder_name in os.listdir(root_png):
-        upscale_dir = os.path.join(root_upscale, folder_name)
+        upscale_dir = os.path.join(basic_or_upscale, folder_name)
         svg_dir = os.path.join(root_svg, folder_name)
 
         if not os.path.isdir(upscale_dir): continue
@@ -136,11 +179,14 @@ def convert_png_to_svg():
 
             try:
                 vtracer.convert_image_to_svg_py(png_path, svg_path)
-                fix_svg_size(svg_path)
+                if depth_style:
+                    pass
+                else:
+                    fix_svg_size(svg_path)
             except Exception as e:
                 rprint (f"[bold red] ! [/]{e}")
 
-    rprint (" [black on cyan]✔[/] Done!"); time.sleep(1)
+    rprint (" [black on cyan]✔[/] Done!"); time.sleep(0.7)
 
 
 
