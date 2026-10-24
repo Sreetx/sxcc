@@ -46,7 +46,7 @@ For non-Linux distro:
 Can run on Linux, Android (Termux), and Windows (Eksperimental)
 
 ## NEW INFO!
-GNOME 51+ and Plasma 6.14+ start implementing SVG cursors as the default option, the structure is something like this:
+GNOME 51+ and Plasma 6.2+ start implementing SVG cursors as the default option, the structure is something like this:
 
         Skirk Cursors (examples)
         |
