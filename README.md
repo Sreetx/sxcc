@@ -52,25 +52,30 @@ When running the script for the first time, all the necessary dependencies are a
 
 Then you will be presented with a screen like this:
 
-## 1. Run the script
+### 1. Run the script
 The main interface of the script will look like this. You need to select the mode you want to use; for example, if you want mode 1, simply enter the number 1.
-[!Tahap 1](https://github.com/Sreetx/sxcc/blob/master/Assets/foto/tahap%201.png?raw=true)
 
-## 2. Change the directory
+<img width="688" height="203" alt="image" src="https://github.com/user-attachments/assets/d37c9a8c-c45f-403e-a31a-60846df9fa66" />
+
+### 2. Change the directory
 Next, you will be asked for the path to your Windows cursors. Remember, the path must be correct! If you choose option 1 or 2 mentioned above, you must provide the folder that contains a collection of Windows cursors in the .ani format. I’m using this folder—you might notice a "~" symbol; this symbol represents your current home directory.
-[!Tahap 3](https://github.com/Sreetx/sxcc/blob/master/Assets/foto/tahap%203.png?raw=true)
 
-## 3. Set name of the cursors
+<img width="675" height="226" alt="image" src="https://github.com/user-attachments/assets/74a33449-e682-4f8b-99b6-3f9c03054449" />
+
+### 3. Set name of the cursors
 Give the cursor a name—you can choose whatever you like. Spaces are allowed, too; here, I’m using the name "My Cursors."
-[!Tahap 4](https://github.com/Sreetx/sxcc/blob/master/Assets/foto/tahap%204.png?raw=true)
 
-## 4. Wait the process
+<img width="396" height="263" alt="image" src="https://github.com/user-attachments/assets/8c3f2ca0-f0ab-4255-b41b-bb83b98bb199" />
+
+### 4. Wait the process
 Once it reaches this stage, all you have to do is wait—good luck! If an error occurs, you’ll see a warning labeled "FAIL," "ERROR," or something similar.
-[!Process](https://github.com/Sreetx/sxcc/blob/master/Assets/foto/pemrosesan.png?raw=true)
 
-## 5. Done
+<img width="666" height="191" alt="image" src="https://github.com/user-attachments/assets/0d26725d-5282-46e6-b33b-76d907017e69" />
+
+### 5. Done
 Once it’s like this, you’re all set—the cursor has been fully converted; now just move it to /usr/share/icons.
-[!Done](https://github.com/Sreetx/sxcc/blob/7ba595cb8f20154c6d4e7d1d889667c0d728611f/Assets/foto/Done.png)
+
+<img width="703" height="288" alt="image" src="https://github.com/user-attachments/assets/57aa0cf6-0c8d-42df-b4ba-996dc57341c4" />
 
 # Compability
 
