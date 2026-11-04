@@ -47,6 +47,31 @@ For non-Linux distro:
     cd sxcc
     python3 main.py
 
+# How to USE.
+When running the script for the first time, all the necessary dependencies are automatically downloaded. The installation of these dependencies is performed with the help of `pip`, which is executed as a subprocess by the script. In case the installation of `pip` fails, then it automatically falls back to the native package manager of your system (such as `yay`/`paru`, `pacman`, `apt`, or `dnf`). Although, installing with the help of `yay` or `paru` does not usually raise any errors, but installing with the help of a normal native package manager might lead to the installation of incomplete packages.
+
+Then you will be presented with a screen like this:
+
+## 1. Run the script
+The main interface of the script will look like this. You need to select the mode you want to use; for example, if you want mode 1, simply enter the number 1.
+[!Tahap 1](https://github.com/Sreetx/sxcc/blob/master/Assets/foto/tahap%201.png?raw=true)
+
+## 2. Change the directory
+Next, you will be asked for the path to your Windows cursors. Remember, the path must be correct! If you choose option 1 or 2 mentioned above, you must provide the folder that contains a collection of Windows cursors in the .ani format. I’m using this folder—you might notice a "~" symbol; this symbol represents your current home directory.
+[!Tahap 3](https://github.com/Sreetx/sxcc/blob/master/Assets/foto/tahap%203.png?raw=true)
+
+## 3. Set name of the cursors
+Give the cursor a name—you can choose whatever you like. Spaces are allowed, too; here, I’m using the name "My Cursors."
+[!Tahap 4](https://github.com/Sreetx/sxcc/blob/master/Assets/foto/tahap%204.png?raw=true)
+
+## 4. Wait the process
+Once it reaches this stage, all you have to do is wait—good luck! If an error occurs, you’ll see a warning labeled "FAIL," "ERROR," or something similar.
+[!Process](https://github.com/Sreetx/sxcc/blob/master/Assets/foto/pemrosesan.png?raw=true)
+
+## 5. Done
+Once it’s like this, you’re all set—the cursor has been fully converted; now just move it to /usr/share/icons.
+[!Done](https://github.com/Sreetx/sxcc/blob/7ba595cb8f20154c6d4e7d1d889667c0d728611f/Assets/foto/Done.png)
+
 # Compability
 
 Can run on Linux, Android (Termux), and Windows (Eksperimental)
